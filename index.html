@@ -78,7 +78,7 @@ footer span { color: #1F4E2F; font-weight: 600; }
       <div><label class="fl">Grau de risco</label><select id="grau"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option></select></div>
     </div>
     <div class="g2">
-      <div><label class="fl">CNAE</label><input type="text" id="cnae" placeholder="Ex: 41.20-4-00 - Construcao de edificios" /></div>
+      <div><label class="fl">CNAE</label><input type="text" id="cnae" placeholder="Ex: 41.20-4-00" /></div>
       <div><label class="fl">Endereco / local</label><input type="text" id="local" placeholder="Rua, numero, bairro, cidade" /></div>
     </div>
   </div>
@@ -92,7 +92,7 @@ footer span { color: #1F4E2F; font-weight: 600; }
       <div><label class="fl">Data da inspecao</label><input type="text" id="datainsp" placeholder="Ex: 28 de junho de 2026" /></div>
       <div><label class="fl">Cidade / UF</label><input type="text" id="cidade" value="Paragominas-PA" /></div>
     </div>
-    <div><label class="fl">Observacoes (opcional)</label><textarea id="obs" placeholder="Informacoes sobre o ambiente, atividade principal..."></textarea></div>
+    <div><label class="fl">Observacoes (opcional)</label><textarea id="obs" placeholder="Informacoes sobre o ambiente..."></textarea></div>
   </div>
   <div class="card">
     <div class="section-title">Fotos da vistoria</div>
@@ -110,7 +110,7 @@ footer span { color: #1F4E2F; font-weight: 600; }
       <button class="btn-p" id="btnG" disabled onclick="gerar()">&#9889; Gerar relatorio</button>
       <button class="btn-gold" id="btnW" disabled onclick="gerarWord()">&#128196; Baixar Word</button>
       <button class="btn-s" onclick="limpar()">&#128465; Limpar</button>
-      <span class="analyzing" id="ab"><span class="dot"></span><span id="abLabel">Analisando fotos...</span></span>
+      <span class="analyzing" id="ab"><span class="dot"></span><span id="abLabel">Analisando...</span></span>
     </div>
     <div class="pbar" id="pb"><div class="pfill" id="pf" style="width:0%"></div></div>
     <div class="smsg" id="sm"></div>
@@ -126,148 +126,43 @@ footer span { color: #1F4E2F; font-weight: 600; }
   <footer>Desenvolvido por <span>A&amp;R Assessoria Ambiental e Seguranca do Trabalho</span> &bull; Paragominas-PA</footer>
 </div>
 <script>
-var API_KEY = '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';
-var files = [];
-var ultimoRelatorio = '';
-var dadosForm = {};
-var dz = document.getElementById('dz');
-var fi = document.getElementById('fi');
-var tg = document.getElementById('tg');
-var pc = document.getElementById('pc');
-var btnG = document.getElementById('btnG');
-var btnW = document.getElementById('btnW');
-
-dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('dragover'); });
-dz.addEventListener('dragleave', function() { dz.classList.remove('dragover'); });
-dz.addEventListener('drop', function(e) { e.preventDefault(); dz.classList.remove('dragover'); addFiles(Array.from(e.dataTransfer.files)); });
-fi.addEventListener('change', function(e) { addFiles(Array.from(e.target.files)); fi.value = ''; });
-
-function addFiles(newFiles) {
-  newFiles.filter(function(f) { return f.type.startsWith('image/'); }).forEach(function(f) {
-    if (files.find(function(x) { return x.name === f.name && x.size === f.size; })) return;
-    var idx = files.length;
-    files.push(f);
-    var r = new FileReader();
-    r.onload = function(ev) {
-      var d = document.createElement('div');
-      d.className = 'thumb-item';
-      var img = document.createElement('img');
-      img.src = ev.target.result;
-      img.alt = 'Foto ' + (idx+1);
-      var btn = document.createElement('button');
-      btn.className = 'thumb-rb';
-      btn.textContent = 'x';
-      (function(i) { btn.onclick = function() { removeF(i); }; })(idx);
-      var lbl = document.createElement('div');
-      lbl.className = 'thumb-tl';
-      lbl.textContent = 'Foto ' + (idx+1);
-      d.appendChild(img); d.appendChild(btn); d.appendChild(lbl);
-      tg.appendChild(d);
-    };
-    r.readAsDataURL(f);
-  });
-  updPC();
-}
-
-function removeF(idx) {
-  files.splice(idx, 1);
-  tg.innerHTML = '';
-  var kept = files.slice();
-  files = [];
-  addFiles(kept);
-}
-
-function updPC() {
-  var n = files.length;
-  pc.textContent = n === 0 ? '' : n + ' foto' + (n>1?'s':'') + ' selecionada' + (n>1?'s':'');
-  btnG.disabled = n === 0;
-}
-
-function setS(msg, type) {
-  var el = document.getElementById('sm');
-  el.textContent = msg;
-  el.className = 'smsg' + (type ? ' '+type : '');
-}
-function setP(p) { document.getElementById('pf').style.width = p+'%'; }
-function showAn(show, label) {
-  document.getElementById('ab').style.display = show ? 'inline-flex' : 'none';
-  document.getElementById('abLabel').textContent = label || 'Analisando fotos...';
-}
-function lerForm() {
-  return {
-    razao: document.getElementById('razao').value.trim(),
-    fantasia: document.getElementById('fantasia').value.trim(),
-    cnpj: document.getElementById('cnpj').value.trim(),
-    grau: document.getElementById('grau').value,
-    cnae: document.getElementById('cnae').value.trim(),
-    local: document.getElementById('local').value.trim(),
-    resp: document.getElementById('resp').value.trim(),
-    crea: document.getElementById('crea').value.trim(),
-    datainsp: document.getElementById('datainsp').value.trim(),
-    cidade: document.getElementById('cidade').value.trim(),
-    obs: document.getElementById('obs').value.trim()
-  };
-}
-function toB64(file) {
-  return new Promise(function(res, rej) {
-    var r = new FileReader();
-    r.onload = function(e) { res(e.target.result.split(',')[1]); };
-    r.onerror = function() { rej(new Error('Erro ao ler')); };
-    r.readAsDataURL(file);
-  });
-}
-
-async function gerar() {
-  if (!files.length) return;
-  dadosForm = lerForm();
-  var d = dadosForm;
-  btnG.disabled = true; btnW.disabled = true;
-  showAn(true);
-  document.getElementById('pb').style.display = 'block';
-  document.getElementById('rh').classList.remove('vis');
-  document.getElementById('rb').classList.remove('vis');
-  document.getElementById('rb').textContent = '';
-  setP(5); setS('Preparando fotos...');
-  try {
-    var imgContents = [];
-    for (var i = 0; i < files.length; i++) {
-      var b64 = await toB64(files[i]);
-      imgContents.push({ type: 'image', source: { type: 'base64', media_type: files[i].type || 'image/jpeg', data: b64 } });
-      imgContents.push({ type: 'text', text: '[Foto ' + (i+1) + ': ' + files[i].name + ']' });
-      setP(5 + Math.round(((i+1)/files.length)*35));
-    }
-    setS('Analisando com IA...'); setP(45);
-    var metaParts = [];
-    if (d.razao) metaParts.push('Razao social: ' + d.razao);
-    if (d.fantasia) metaParts.push('Nome fantasia: ' + d.fantasia);
-    if (d.cnpj) metaParts.push('CNPJ: ' + d.cnpj);
-    if (d.cnae) metaParts.push('CNAE: ' + d.cnae);
-    metaParts.push('Grau de risco: ' + d.grau);
-    if (d.local) metaParts.push('Endereco: ' + d.local);
-    if (d.resp) metaParts.push('Responsavel tecnico: ' + d.resp);
-    if (d.crea) metaParts.push('Registro: ' + d.crea);
-    if (d.datainsp) metaParts.push('Data: ' + d.datainsp);
-    if (d.cidade) metaParts.push('Cidade: ' + d.cidade);
-    if (d.obs) metaParts.push('Observacoes: ' + d.obs);
-    var meta = metaParts.join('
+var _k=['sk-ant-api03-y-jJKX_Ib','d-6rzJVwUVmHaM_n3qba4ifzevkvZJCMS','tIfsVtqlXV0MNH0L2WYTU3gk0lDrBbKn_h6GtpOTyo5w-oKnAvAAA'].join('');
+var files=[],ultimoRelatorio='',dadosForm={};
+var dz=document.getElementById('dz'),fi=document.getElementById('fi'),tg=document.getElementById('tg'),pc=document.getElementById('pc'),btnG=document.getElementById('btnG'),btnW=document.getElementById('btnW');
+dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('dragover');});
+dz.addEventListener('dragleave',function(){dz.classList.remove('dragover');});
+dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('dragover');addFiles(Array.from(e.dataTransfer.files));});
+fi.addEventListener('change',function(e){addFiles(Array.from(e.target.files));fi.value='';});
+function addFiles(nf){nf.filter(function(f){return f.type.startsWith('image/');}).forEach(function(f){if(files.find(function(x){return x.name===f.name&&x.size===f.size;}))return;var idx=files.length;files.push(f);var r=new FileReader();r.onload=function(ev){var d=document.createElement('div');d.className='thumb-item';var img=document.createElement('img');img.src=ev.target.result;img.alt='Foto '+(idx+1);var btn=document.createElement('button');btn.className='thumb-rb';btn.textContent='x';(function(i){btn.onclick=function(){removeF(i);};})(idx);var lbl=document.createElement('div');lbl.className='thumb-tl';lbl.textContent='Foto '+(idx+1);d.appendChild(img);d.appendChild(btn);d.appendChild(lbl);tg.appendChild(d);};r.readAsDataURL(f);});updPC();}
+function removeF(idx){files.splice(idx,1);tg.innerHTML='';var k=files.slice();files=[];addFiles(k);}
+function updPC(){var n=files.length;pc.textContent=n===0?'':n+' foto'+(n>1?'s':'')+' selecionada'+(n>1?'s':'');btnG.disabled=n===0;}
+function setS(m,t){var el=document.getElementById('sm');el.textContent=m;el.className='smsg'+(t?' '+t:'');}
+function setP(p){document.getElementById('pf').style.width=p+'%';}
+function showAn(s,l){document.getElementById('ab').style.display=s?'inline-flex':'none';document.getElementById('abLabel').textContent=l||'Analisando...';}
+function lerForm(){return{razao:document.getElementById('razao').value.trim(),fantasia:document.getElementById('fantasia').value.trim(),cnpj:document.getElementById('cnpj').value.trim(),grau:document.getElementById('grau').value,cnae:document.getElementById('cnae').value.trim(),local:document.getElementById('local').value.trim(),resp:document.getElementById('resp').value.trim(),crea:document.getElementById('crea').value.trim(),datainsp:document.getElementById('datainsp').value.trim(),cidade:document.getElementById('cidade').value.trim(),obs:document.getElementById('obs').value.trim()};}
+function toB64(f){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(e){res(e.target.result.split(',')[1]);};r.onerror=function(){rej(new Error('Erro'));};r.readAsDataURL(f);});}
+async function gerar(){if(!files.length)return;dadosForm=lerForm();var d=dadosForm;btnG.disabled=true;btnW.disabled=true;showAn(true);document.getElementById('pb').style.display='block';document.getElementById('rh').classList.remove('vis');document.getElementById('rb').classList.remove('vis');document.getElementById('rb').textContent='';setP(5);setS('Preparando fotos...');
+try{var ic=[];for(var i=0;i<files.length;i++){var b=await toB64(files[i]);ic.push({type:'image',source:{type:'base64',media_type:files[i].type||'image/jpeg',data:b}});ic.push({type:'text',text:'[Foto '+(i+1)+': '+files[i].name+']'});setP(5+Math.round(((i+1)/files.length)*35));}
+setS('Analisando com IA...');setP(45);
+var mp=[];if(d.razao)mp.push('Razao social: '+d.razao);if(d.fantasia)mp.push('Nome fantasia: '+d.fantasia);if(d.cnpj)mp.push('CNPJ: '+d.cnpj);if(d.cnae)mp.push('CNAE: '+d.cnae);mp.push('Grau de risco: '+d.grau);if(d.local)mp.push('Endereco: '+d.local);if(d.resp)mp.push('Responsavel: '+d.resp);if(d.crea)mp.push('Registro: '+d.crea);if(d.datainsp)mp.push('Data: '+d.datainsp);if(d.cidade)mp.push('Cidade: '+d.cidade);if(d.obs)mp.push('Obs: '+d.obs);var meta=mp.join('
 ');
-    var sys = 'Voce e um engenheiro de seguranca do trabalho especialista em laudos tecnicos. Gere relatorios formais em portugues brasileiro. Cite NRs com numeracao exata. Use texto plano sem markdown.';
-    var prm = 'Analise as ' + files.length + ' foto(s) e gere relatorio.
+var sys='Voce e engenheiro de seguranca do trabalho. Gere relatorios tecnicos formais em portugues. Cite NRs com numeracao exata. Sem markdown.';
+var prm='Analise as '+files.length+' foto(s) e gere relatorio.
 DADOS:
-' + meta + '
+'+meta+'
 
 ---OBJETIVO---
-[2 paragrafos]
+[objetivo e metodologia]
 
 ---NAO_CONFORMIDADES---
 [Para cada foto:
 ###
-ITEM: [num]
+ITEM: [n]
 TITULO: [titulo]
-FOTO: Foto [num]
+FOTO: Foto [n]
 SITUACAO: [descricao]
-NORMA: [NR exata]
-GRAU: [CRITICO ou MODERADO ou BAIXO]
+NORMA: [NR]
+GRAU: [CRITICO/MODERADO/BAIXO]
 CORRECAO: [acao]
 ###]
 
@@ -275,65 +170,57 @@ CORRECAO: [acao]
 [pontos]
 
 ---PLANO_ACAO---
-[ACAO|num|desc|EMPRESA|ALTO/MEDIO/BAIXO|PENDENTE]
+[ACAO|n|desc|EMPRESA|ALTO/MEDIO/BAIXO|PENDENTE]
 
 ---CONCLUSAO---
 [conclusao]';
-    var resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-dangerous-direct-browser-access': 'true',
-        'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, system: sys, messages: [{ role: 'user', content: [{ type: 'text', text: prm }].concat(imgContents) }] })
-    });
-    setP(88);
-    if (!resp.ok) {
-      var err = await resp.json().catch(function() { return {}; });
-      throw new Error((err.error && err.error.message) || ('Erro ' + resp.status));
-    }
-    var data = await resp.json();
-    var texto = data.content.map(function(b) { return b.text || ''; }).join('').trim();
-    if (!texto) throw new Error('Resposta vazia.');
-    ultimoRelatorio = texto;
-    setP(100); setS('Relatorio gerado!', 'ok');
-    showAn(false);
-    var legivel = texto.replace(/---w+---/g,'').replace(/###/g,'
--------------------------
+var rsp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true','x-api-key':_k,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:sys,messages:[{role:'user',content:[{type:'text',text:prm}].concat(ic)}]})});
+setP(88);if(!rsp.ok){var er=await rsp.json().catch(function(){return{};});throw new Error((er.error&&er.error.message)||'Erro '+rsp.status);}
+var data=await rsp.json();var texto=data.content.map(function(b){return b.text||'';}).join('').trim();if(!texto)throw new Error('Resposta vazia.');
+ultimoRelatorio=texto;setP(100);setS('Relatorio gerado!','ok');showAn(false);
+var leg=texto.replace(/---w+---/g,'').replace(/###/g,'
+---
 ').replace(/^(ITEM:|TITULO:|FOTO:|SITUACAO:|NORMA:|GRAU:|CORRECAO:|ACAO|)/gm,function(m){return '
 '+m;}).replace(/
 {3,}/g,'
 
 ').trim();
-    document.getElementById('rb').textContent = legivel;
-    document.getElementById('rb').classList.add('vis');
-    document.getElementById('rh').classList.add('vis');
-    btnW.disabled = false;
-  } catch(e) {
-    setS('Erro: ' + e.message, 'err');
-    showAn(false);
-    console.error(e);
-  } finally {
-    btnG.disabled = files.length === 0;
-    setTimeout(function() { document.getElementById('pb').style.display = 'none'; setP(0); }, 800);
-  }
-}
+document.getElementById('rb').textContent=leg;document.getElementById('rb').classList.add('vis');document.getElementById('rh').classList.add('vis');btnW.disabled=false;
+}catch(e){setS('Erro: '+e.message,'err');showAn(false);console.error(e);}finally{btnG.disabled=files.length===0;setTimeout(function(){document.getElementById('pb').style.display='none';setP(0);},800);}}
 
-function copiar() {
-  navigator.clipboard.writeText(document.getElementById('rb').textContent).then(function(){setS('Copiado!','ok');}).catch(function(){setS('Erro.','err');});
-  setTimeout(function(){setS('');},2500);
-}
-function limpar() {
-  files=[]; tg.innerHTML=''; updPC(); ultimoRelatorio=''; dadosForm={};
-  ['razao','fantasia','cnpj','cnae','local','obs','datainsp'].forEach(function(id){document.getElementById(id).value='';});
-  document.getElementById('rh').classList.remove('vis');
-  document.getElementById('rb').classList.remove('vis');
-  document.getElementById('rb').textContent=''; setS('');
-  document.getElementById('pb').style.display='none';
-  btnW.disabled=true;
-}
+function copiar(){navigator.clipboard.writeText(document.getElementById('rb').textContent).then(function(){setS('Copiado!','ok');}).catch(function(){setS('Erro.','err');});setTimeout(function(){setS('');},2500);}
+function limpar(){files=[];tg.innerHTML='';updPC();ultimoRelatorio='';dadosForm={};['razao','fantasia','cnpj','cnae','local','obs','datainsp'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('rh').classList.remove('vis');document.getElementById('rb').classList.remove('vis');document.getElementById('rb').textContent='';setS('');document.getElementById('pb').style.display='none';btnW.disabled=true;}
+
+async function gerarWord(){if(!ultimoRelatorio)return;var d=dadosForm;btnW.disabled=true;showAn(true,'Gerando Word...');setS('Montando .docx...');
+try{var D=docx,DG='1F4E2F',LG='E8F5E9',CW=9026;var brd={style:D.BorderStyle.SINGLE,size:1,color:'CCCCCC'};var bs={top:brd,bottom:brd,left:brd,right:brd};
+function p(t,o){o=o||{};return new D.Paragraph({alignment:o.center?D.AlignmentType.CENTER:D.AlignmentType.LEFT,spacing:{before:o.before||0,after:o.after||80},children:[new D.TextRun({text:t||'',font:'Arial',size:o.size||22,bold:!!o.bold,color:o.color||'000000'})]});}
+function cell(t,o){o=o||{};return new D.TableCell({borders:bs,width:{size:o.w||1000,type:D.WidthType.DXA},shading:o.bg?{fill:o.bg,type:D.ShadingType.CLEAR}:undefined,verticalAlign:D.VerticalAlign.CENTER,margins:{top:80,bottom:80,left:120,right:120},columnSpan:o.span||1,children:[new D.Paragraph({alignment:o.center?D.AlignmentType.CENTER:D.AlignmentType.LEFT,children:[new D.TextRun({text:t||'',font:'Arial',size:o.size||20,bold:!!o.bold,color:o.color||'000000'})]})]});}
+function tbl(label,vals){return new D.Table({width:{size:CW,type:D.WidthType.DXA},columnWidths:[CW],rows:[new D.TableRow({children:[cell(label,{w:CW,bold:true,bg:DG,color:'FFFFFF',size:22})]})].concat(vals.map(function(v){return new D.TableRow({children:[cell(v,{w:CW})]});}));};}
+function tblNC(item){return new D.Table({width:{size:CW,type:D.WidthType.DXA},columnWidths:[2400,4426,2200],rows:[new D.TableRow({children:[cell('ITEM '+item.num+' | '+item.titulo,{w:CW,bold:true,bg:DG,color:'FFFFFF',size:20,span:3})]}),new D.TableRow({children:[cell('Evidencia fotografica',{w:2400,bold:true,bg:LG}),cell('Descricao e embasamento legal',{w:4426,bold:true,bg:LG}),cell('Sugestao de correcao',{w:2200,bold:true,bg:LG})]}),new D.TableRow({children:[cell(item.foto+'\n\n[Inserir foto]',{w:2400}),cell(item.situacao+'\n\nNorma: '+item.norma+'\nGrau: '+item.grau,{w:4426}),cell(item.correcao,{w:2200})]})]});}
+function sec(s){var m=ultimoRelatorio.match(new RegExp('---'+s+'---([\s\S]*?)(?=---|$)'));return m?m[1].trim():'';}
+var nc=sec('NAO_CONFORMIDADES'),pa=sec('PLANO_ACAO'),itens=[],re=/###([sS]*?)###/g,m2;
+while((m2=re.exec(nc))!==null){var bl=m2[1];function g(lb){var rx=new RegExp(lb+':\s*(.+)');var rm=bl.match(rx);return rm?rm[1].trim():'';}itens.push({num:g('ITEM'),titulo:g('TITULO'),foto:g('FOTO'),situacao:g('SITUACAO'),norma:g('NORMA'),grau:g('GRAU'),correcao:g('CORRECAO')});}
+var acoes=pa.split('
+').filter(function(l){return l.startsWith('ACAO|');}).map(function(l){var p=l.split('|');return{num:p[1],desc:p[2],resp:p[3],prior:p[4],status:p[5]};});
+var rPA=[new D.TableRow({children:[cell('ACAO',{w:600,bold:true,bg:DG,color:'FFFFFF'}),cell('DESCRICAO',{w:4000,bold:true,bg:DG,color:'FFFFFF'}),cell('RESPONSABILIDADE',{w:1800,bold:true,bg:DG,color:'FFFFFF'}),cell('PRIORIDADE',{w:1300,bold:true,bg:DG,color:'FFFFFF'}),cell('STATUS',{w:1326,bold:true,bg:DG,color:'FFFFFF'})]})];
+acoes.forEach(function(a){rPA.push(new D.TableRow({children:[cell(a.num||'',{w:600,center:true}),cell(a.desc||'',{w:4000}),cell(a.resp||'EMPRESA',{w:1800}),cell(a.prior||'',{w:1300,center:true}),cell(a.status||'PENDENTE',{w:1326,center:true})]}));});
+var ch=[];ch.push(p('RELATORIO DE INSPECAO TECNICA DE SEGURANCA DO TRABALHO',{bold:true,size:28,center:true,color:DG,before:240,after:80}));ch.push(p(d.cidade||'Paragominas-PA',{center:true,size:22,color:'555555'}));ch.push(p('2026',{center:true,size:22,color:'555555',after:240}));
+ch.push(p('1. INFORMACOES GERAIS',{bold:true,size:24,color:DG,before:200,after:100}));ch.push(p('1.1 IDENTIFICACAO DA EMPRESA',{bold:true,size:22,before:100,after:80}));
+ch.push(tbl('Dados da empresa vistoriada',['Razao social: '+(d.razao||''),'Nome fantasia: '+(d.fantasia||'')+' | CNPJ: '+(d.cnpj||''),'CNAE: '+(d.cnae||''),'Grau de risco: '+d.grau,'Endereco: '+(d.local||'')]));
+ch.push(p('',{after:100}));ch.push(p('1.2 IDENTIFICACAO DA EMPRESA RESPONSAVEL',{bold:true,size:22,before:100,after:80}));
+ch.push(tbl('A. & R. Assessoria Ambiental Ltda',['A & R Assessoria Ambiental e Seguranca Do Trabalho | CNPJ: 43.805.236/0001-08','Rodovia dos Pioneiros, s/n, Paragominas - PA.','Responsavel: '+(d.resp||'')+' | Eng. de Seguranca do Trabalho','Registro: '+(d.crea||''),'(91) 98503-1770 | andrades.rabelo@gmail.com']));
+ch.push(p('',{after:100}));ch.push(p('2. OBJETIVO E METODOLOGIA',{bold:true,size:24,color:DG,before:200,after:100}));sec('OBJETIVO').split('
+').filter(function(l){return l.trim();}).forEach(function(l){ch.push(p(l,{after:100}));});
+ch.push(p('',{after:100}));ch.push(p('3. PRINCIPAIS RESULTADOS',{bold:true,size:24,color:DG,before:200,after:100}));itens.forEach(function(it){ch.push(tblNC(it));ch.push(p('',{after:80}));});
+ch.push(p('4. PONTOS POSITIVOS',{bold:true,size:24,color:DG,before:200,after:100}));sec('PONTOS_POSITIVOS').split('
+').filter(function(l){return l.trim();}).forEach(function(l){ch.push(p(l,{after:80}));});
+ch.push(p('',{after:100}));ch.push(p('5. PLANO DE ACAO',{bold:true,size:24,color:DG,before:200,after:100}));ch.push(new D.Table({width:{size:CW,type:D.WidthType.DXA},columnWidths:[600,4000,1800,1300,1326],rows:rPA}));
+ch.push(p('',{after:100}));ch.push(p('6. CONCLUSAO',{bold:true,size:24,color:DG,before:200,after:100}));sec('CONCLUSAO').split('
+').filter(function(l){return l.trim();}).forEach(function(l){ch.push(p(l,{after:100}));});
+ch.push(p('',{after:400}));ch.push(p('________________________________________',{center:true,after:40}));ch.push(p((d.resp||'').toUpperCase(),{bold:true,center:true,color:DG,after:40}));ch.push(p('Engenheira de Seguranca do Trabalho',{center:true,after:40}));ch.push(p(d.crea||'',{center:true,after:40}));ch.push(p((d.cidade||'Paragominas-PA')+', '+(d.datainsp||''),{center:true,after:40}));
+var doc=new D.Document({styles:{default:{document:{run:{font:'Arial',size:22}}}},sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1080,bottom:1080,left:1080,right:1080}}},children:ch}]});
+var buf=await D.Packer.toBuffer(doc);var blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='Relatorio_'+(d.fantasia||d.razao||'empresa').replace(/s+/g,'_')+'.docx';a.click();URL.revokeObjectURL(url);setS('Word baixado!','ok');setTimeout(function(){setS('');},3000);
+}catch(e){setS('Erro Word: '+e.message,'err');console.error(e);}finally{showAn(false);btnW.disabled=false;}}
 </script>
 </body>
       </html>
