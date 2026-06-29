@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Relatorio de Vistoria - A&amp;R Assessoria</title>
+<title>Relatorio de Vistoria - A&R Assessoria</title>
 <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -65,7 +65,7 @@ footer span { color: #1F4E2F; font-weight: 600; }
 <header>
   <div>
     <div class="logo">A&amp;R Assessoria</div>
-    <div class="tagline">Ambiental e Seguranca do Trabalho - Relatorio de Inspecao Tecnica</div>
+    <div class="tagline">Ambiental e Seguranca do Trabalho &mdash; Relatorio de Inspecao Tecnica</div>
   </div>
 </header>
 <div class="container">
@@ -100,7 +100,7 @@ footer span { color: #1F4E2F; font-weight: 600; }
       <input type="file" id="fi" accept="image/*" multiple />
       <div class="dz-icon">&#128247;</div>
       <div class="dz-text">Clique ou arraste as fotos aqui</div>
-      <div class="dz-hint">JPG, PNG, WEBP - varias fotos aceitas</div>
+      <div class="dz-hint">JPG, PNG, WEBP &bull; varias fotos aceitas</div>
     </div>
     <div class="thumb-grid" id="tg"></div>
     <div class="pcnt" id="pc"></div>
@@ -116,19 +116,20 @@ footer span { color: #1F4E2F; font-weight: 600; }
     <div class="smsg" id="sm"></div>
   </div>
   <div class="rpt-hdr" id="rh">
-    <h3>Relatorio gerado</h3>
+    <h3>&#9989; Relatorio gerado</h3>
     <div style="display:flex;gap:8px;align-items:center;">
       <span class="badge-ok">Concluido</span>
-      <button class="btn-s" style="color:#fff;border-color:#fff;" onclick="copiar()">Copiar</button>
+      <button class="btn-s" style="color:#fff;border-color:#fff;" onclick="copiar()">&#128203; Copiar</button>
     </div>
   </div>
   <div class="rpt-body" id="rb"></div>
-  <footer>Desenvolvido por <span>A&amp;R Assessoria Ambiental e Seguranca do Trabalho</span> - Paragominas-PA</footer>
+  <footer>Desenvolvido por <span>A&amp;R Assessoria Ambiental e Seguranca do Trabalho</span> &bull; Paragominas-PA</footer>
 </div>
 <script>
 var files = [];
 var ultimoRelatorio = '';
 var dadosForm = {};
+
 var dz = document.getElementById('dz');
 var fi = document.getElementById('fi');
 var tg = document.getElementById('tg');
@@ -156,7 +157,7 @@ function addFiles(newFiles) {
       var btn = document.createElement('button');
       btn.className = 'thumb-rb';
       btn.textContent = 'x';
-      (function(i) { btn.onclick = function() { removeF(i); }; })(idx);
+      btn.onclick = function() { removeF(idx); };
       var lbl = document.createElement('div');
       lbl.className = 'thumb-tl';
       lbl.textContent = 'Foto ' + (idx+1);
@@ -192,6 +193,7 @@ function showAn(show, label) {
   document.getElementById('ab').style.display = show ? 'inline-flex' : 'none';
   document.getElementById('abLabel').textContent = label || 'Analisando fotos...';
 }
+
 function lerForm() {
   return {
     razao: document.getElementById('razao').value.trim(),
@@ -207,11 +209,12 @@ function lerForm() {
     obs: document.getElementById('obs').value.trim()
   };
 }
+
 function toB64(file) {
   return new Promise(function(res, rej) {
     var r = new FileReader();
     r.onload = function(e) { res(e.target.result.split(',')[1]); };
-    r.onerror = function() { rej(new Error('Erro ao ler')); };
+    r.onerror = function() { rej(new Error('Erro ao ler arquivo')); };
     r.readAsDataURL(file);
   });
 }
@@ -227,6 +230,7 @@ async function gerar() {
   document.getElementById('rb').classList.remove('vis');
   document.getElementById('rb').textContent = '';
   setP(5); setS('Preparando fotos...');
+
   try {
     var imgContents = [];
     for (var i = 0; i < files.length; i++) {
@@ -236,6 +240,7 @@ async function gerar() {
       setP(5 + Math.round(((i+1)/files.length)*35));
     }
     setS('Analisando com IA...'); setP(45);
+
     var metaParts = [];
     if (d.razao) metaParts.push('Razao social: ' + d.razao);
     if (d.fantasia) metaParts.push('Nome fantasia: ' + d.fantasia);
@@ -248,73 +253,38 @@ async function gerar() {
     if (d.datainsp) metaParts.push('Data: ' + d.datainsp);
     if (d.cidade) metaParts.push('Cidade: ' + d.cidade);
     if (d.obs) metaParts.push('Observacoes: ' + d.obs);
-    var meta = metaParts.join('
-');
-    var systemMsg = 'Voce e um engenheiro de seguranca do trabalho especialista em laudos tecnicos. Gere relatorios formais em portugues brasileiro. Cite NRs com numeracao exata. Use texto plano sem markdown.';
-    var promptMsg = 'Analise as ' + files.length + ' foto(s) e gere relatorio de inspecao.
-DADOS:
-' + meta + '
+    var meta = metaParts.join('\n');
 
-Formato obrigatorio com marcadores ---SECAO---:
+    var systemMsg = 'Voce e um engenheiro de seguranca do trabalho especialista em laudos tecnicos. Gere relatorios formais, detalhados e precisos em portugues brasileiro. Cite normas regulamentadoras (NRs) com numeracao exata. Use apenas texto plano estruturado, sem asteriscos ou markdown.';
 
----OBJETIVO---
-[2 paragrafos objetivo e metodologia]
+    var promptMsg = 'Analise as ' + files.length + ' foto(s) de vistoria e gere um RELATORIO DE INSPECAO TECNICA DE SEGURANCA DO TRABALHO completo.\n\nDADOS:\n' + meta + '\n\nUse EXATAMENTE este formato com os marcadores ---SECAO---:\n\n---OBJETIVO---\n[2 paragrafos: objetivo e metodologia]\n\n---NAO_CONFORMIDADES---\n[Para CADA foto, um bloco ###:\n###\nITEM: [numero]\nTITULO: [titulo curto]\nFOTO: Foto [numero]\nSITUACAO: [descricao objetiva do problema]\nNORMA: [NR com item exato]\nGRAU: [CRITICO ou MODERADO ou BAIXO]\nCORRECAO: [medida corretiva especifica]\n###]\n\n---PONTOS_POSITIVOS---\n[Pontos positivos ou ausencia deles]\n\n---PLANO_ACAO---\n[Uma linha por item: ACAO|[num]|[descricao]|EMPRESA|[ALTO ou MEDIO ou BAIXO]|PENDENTE]\n\n---CONCLUSAO---\n[Paragrafo conclusivo terminando com: "O cumprimento dessas recomendacoes e essencial para prevenir acidentes, proteger colaboradores e promover a melhoria continua dos processos."]';
 
----NAO_CONFORMIDADES---
-[Para cada foto:
-###
-ITEM: [num]
-TITULO: [titulo]
-FOTO: Foto [num]
-SITUACAO: [descricao]
-NORMA: [NR exata]
-GRAU: [CRITICO ou MODERADO ou BAIXO]
-CORRECAO: [acao]
-###]
+    var messages = [{ role: 'user', content: [{ type: 'text', text: promptMsg }].concat(imgContents) }];
 
----PONTOS_POSITIVOS---
-[pontos positivos]
-
----PLANO_ACAO---
-[ACAO|num|descricao|EMPRESA|ALTO/MEDIO/BAIXO|PENDENTE]
-
----CONCLUSAO---
-[conclusao terminando com: O cumprimento dessas recomendacoes e essencial para prevenir acidentes, proteger colaboradores e promover a melhoria continua dos processos.]';
     var response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: systemMsg,
-        messages: [{ role: 'user', content: [{ type: 'text', text: promptMsg }].concat(imgContents) }]
-      })
+      headers: { 'Content-Type': 'application/json', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, system: systemMsg, messages: messages })
     });
+
     setP(88);
     if (!response.ok) {
-      var errData = await response.json().catch(function() { return {}; });
-      throw new Error((errData.error && errData.error.message) || ('Erro HTTP ' + response.status));
+      var err = await response.json().catch(function() { return {}; });
+      throw new Error((err.error && err.error.message) || ('Erro ' + response.status));
     }
     var data = await response.json();
     var texto = data.content.map(function(b) { return b.text || ''; }).join('').trim();
-    if (!texto) throw new Error('Resposta vazia.');
-    ultimoRelatorio = texto;
-    setP(100); setS('Relatorio gerado!', 'ok');
-    showAn(false);
-    var legivel = texto
-      .replace(/---w+---/g, '')
-      .replace(/###/g, '
--------------------------
-')
-      .replace(/^(ITEM:|TITULO:|FOTO:|SITUACAO:|NORMA:|GRAU:|CORRECAO:|ACAO|)/gm, function(m) { return '
-' + m; })
-      .replace(/
-{3,}/g, '
+    if (!texto) throw new Error('Resposta vazia da IA.');
 
-').trim();
+    ultimoRelatorio = texto;
+    setP(100); setS('Relatorio gerado com sucesso!', 'ok');
+    showAn(false);
+
+    var legivel = texto
+      .replace(/---\w+---/g, '')
+      .replace(/###/g, '\n-------------------------\n')
+      .replace(/^(ITEM:|TITULO:|FOTO:|SITUACAO:|NORMA:|GRAU:|CORRECAO:|ACAO\|)/gm, function(m) { return '\n' + m; })
+      .replace(/\n{3,}/g, '\n\n').trim();
     document.getElementById('rb').textContent = legivel;
     document.getElementById('rb').classList.add('vis');
     document.getElementById('rh').classList.add('vis');
@@ -322,7 +292,7 @@ CORRECAO: [acao]
   } catch(e) {
     setS('Erro: ' + e.message, 'err');
     showAn(false);
-    console.error('ERRO GERAR:', e);
+    console.error(e);
   } finally {
     btnG.disabled = files.length === 0;
     setTimeout(function() { document.getElementById('pb').style.display = 'none'; setP(0); }, 800);
@@ -331,26 +301,23 @@ CORRECAO: [acao]
 
 function parseRelatorio(texto) {
   function sec(s) {
-    var re = new RegExp('---' + s + '---([sS]*?)(?=---|$)');
-    var m = texto.match(re);
+    var m = texto.match(new RegExp('---' + s + '---([\s\S]*?)(?=---|$)'));
     return m ? m[1].trim() : '';
   }
   var nc = sec('NAO_CONFORMIDADES');
   var pa = sec('PLANO_ACAO');
   var itens = [];
-  var re2 = /###([sS]*?)###/g;
-  var m2;
-  while ((m2 = re2.exec(nc)) !== null) {
-    var bloco = m2[1];
+  var re = /###([\s\S]*?)###/g;
+  var m;
+  while ((m = re.exec(nc)) !== null) {
+    var bloco = m[1];
     function g(label) {
-      var rx = new RegExp(label + ':\s*(.+)');
-      var rm = bloco.match(rx);
-      return rm ? rm[1].trim() : '';
+      var r = bloco.match(new RegExp(label + ':\\s*(.+)'));
+      return r ? r[1].trim() : '';
     }
     itens.push({ num: g('ITEM'), titulo: g('TITULO'), foto: g('FOTO'), situacao: g('SITUACAO'), norma: g('NORMA'), grau: g('GRAU'), correcao: g('CORRECAO') });
   }
-  var acoes = pa.split('
-').filter(function(l) { return l.startsWith('ACAO|'); }).map(function(l) {
+  var acoes = pa.split('\n').filter(function(l) { return l.startsWith('ACAO|'); }).map(function(l) {
     var p = l.split('|');
     return { num: p[1], desc: p[2], resp: p[3], prior: p[4], status: p[5] };
   });
@@ -361,7 +328,7 @@ async function gerarWord() {
   if (!ultimoRelatorio) return;
   var d = dadosForm;
   btnW.disabled = true;
-  showAn(true, 'Gerando Word...');
+  showAn(true, 'Gerando documento Word...');
   setS('Montando .docx...');
   try {
     var parsed = parseRelatorio(ultimoRelatorio);
@@ -369,77 +336,107 @@ async function gerarWord() {
     var DG = '1F4E2F', LG = 'E8F5E9', CW = 9026;
     var b = { style: D.BorderStyle.SINGLE, size: 1, color: 'CCCCCC' };
     var bs = { top: b, bottom: b, left: b, right: b };
+
     function p(text, opts) {
       opts = opts || {};
-      return new D.Paragraph({ alignment: opts.center ? D.AlignmentType.CENTER : D.AlignmentType.LEFT, spacing: { before: opts.before||0, after: opts.after||80 }, children: [new D.TextRun({ text: text||'', font:'Arial', size: opts.size||22, bold:!!opts.bold, color: opts.color||'000000' })] });
+      return new D.Paragraph({
+        alignment: opts.center ? D.AlignmentType.CENTER : D.AlignmentType.LEFT,
+        spacing: { before: opts.before || 0, after: opts.after || 80 },
+        children: [new D.TextRun({ text: text || '', font: 'Arial', size: opts.size || 22, bold: !!opts.bold, color: opts.color || '000000' })]
+      });
     }
+
     function cell(text, opts) {
       opts = opts || {};
-      return new D.TableCell({ borders: bs, width: { size: opts.w||1000, type: D.WidthType.DXA }, shading: opts.bg ? { fill: opts.bg, type: D.ShadingType.CLEAR } : undefined, verticalAlign: D.VerticalAlign.CENTER, margins: { top:80, bottom:80, left:120, right:120 }, columnSpan: opts.span||1, children: [new D.Paragraph({ alignment: opts.center ? D.AlignmentType.CENTER : D.AlignmentType.LEFT, children: [new D.TextRun({ text: text||'', font:'Arial', size: opts.size||20, bold:!!opts.bold, color: opts.color||'000000' })] })] });
+      return new D.TableCell({
+        borders: bs,
+        width: { size: opts.w || 1000, type: D.WidthType.DXA },
+        shading: opts.bg ? { fill: opts.bg, type: D.ShadingType.CLEAR } : undefined,
+        verticalAlign: D.VerticalAlign.CENTER,
+        margins: { top: 80, bottom: 80, left: 120, right: 120 },
+        columnSpan: opts.span || 1,
+        children: [new D.Paragraph({
+          alignment: opts.center ? D.AlignmentType.CENTER : D.AlignmentType.LEFT,
+          children: [new D.TextRun({ text: text || '', font: 'Arial', size: opts.size || 20, bold: !!opts.bold, color: opts.color || '000000' })]
+        })]
+      });
     }
+
     function tblInfo(label, vals) {
-      return new D.Table({ width: { size:CW, type:D.WidthType.DXA }, columnWidths:[CW], rows: [new D.TableRow({ children:[cell(label,{w:CW,bold:true,bg:DG,color:'FFFFFF',size:22})] })].concat(vals.map(function(v){ return new D.TableRow({children:[cell(v,{w:CW})]}); })) });
+      return new D.Table({
+        width: { size: CW, type: D.WidthType.DXA },
+        columnWidths: [CW],
+        rows: [new D.TableRow({ children: [cell(label, { w: CW, bold: true, bg: DG, color: 'FFFFFF', size: 22 })] })].concat(
+          vals.map(function(v) { return new D.TableRow({ children: [cell(v, { w: CW })] }); })
+        )
+      });
     }
+
     function tblNC(item) {
-      return new D.Table({ width:{size:CW,type:D.WidthType.DXA}, columnWidths:[2400,4426,2200], rows:[
-        new D.TableRow({children:[cell('ITEM '+item.num+' | '+item.titulo,{w:CW,bold:true,bg:DG,color:'FFFFFF',size:20,span:3})]}),
-        new D.TableRow({children:[cell('Evidencia fotografica',{w:2400,bold:true,bg:LG}),cell('Descricao e embasamento legal',{w:4426,bold:true,bg:LG}),cell('Sugestao de correcao tecnica',{w:2200,bold:true,bg:LG})]}),
-        new D.TableRow({children:[cell(item.foto+'
-
-[Inserir foto]',{w:2400}),cell(item.situacao+'
-
-Norma: '+item.norma+'
-Grau: '+item.grau,{w:4426}),cell(item.correcao,{w:2200})]})
-      ]});
+      return new D.Table({
+        width: { size: CW, type: D.WidthType.DXA },
+        columnWidths: [2400, 4426, 2200],
+        rows: [
+          new D.TableRow({ children: [cell('ITEM ' + item.num + ' | ' + item.titulo, { w: CW, bold: true, bg: DG, color: 'FFFFFF', size: 20, span: 3 })] }),
+          new D.TableRow({ children: [cell('Evidencia fotografica', { w: 2400, bold: true, bg: LG }), cell('Descricao e embasamento legal', { w: 4426, bold: true, bg: LG }), cell('Sugestao de correcao tecnica', { w: 2200, bold: true, bg: LG })] }),
+          new D.TableRow({ children: [cell(item.foto + '\n\n[Inserir foto aqui]', { w: 2400 }), cell(item.situacao + '\n\nNorma: ' + item.norma + '\nGrau de risco: ' + item.grau, { w: 4426 }), cell(item.correcao, { w: 2200 })] })
+        ]
+      });
     }
-    var rowsPA = [new D.TableRow({children:[cell('ACAO',{w:600,bold:true,bg:DG,color:'FFFFFF'}),cell('DESCRICAO',{w:4000,bold:true,bg:DG,color:'FFFFFF'}),cell('RESPONSABILIDADE',{w:1800,bold:true,bg:DG,color:'FFFFFF'}),cell('PRIORIDADE',{w:1300,bold:true,bg:DG,color:'FFFFFF'}),cell('STATUS',{w:1326,bold:true,bg:DG,color:'FFFFFF'})]})];
-    parsed.acoes.forEach(function(a){ rowsPA.push(new D.TableRow({children:[cell(a.num||'',{w:600,center:true}),cell(a.desc||'',{w:4000}),cell(a.resp||'EMPRESA',{w:1800}),cell(a.prior||'',{w:1300,center:true}),cell(a.status||'PENDENTE',{w:1326,center:true})]})); });
-    var ch = [];
-    ch.push(p('RELATORIO DE INSPECAO TECNICA DE SEGURANCA DO TRABALHO',{bold:true,size:28,center:true,color:DG,before:240,after:80}));
-    ch.push(p(d.cidade||'Paragominas-PA',{center:true,size:22,color:'555555'}));
-    ch.push(p('2026',{center:true,size:22,color:'555555',after:240}));
-    ch.push(p('1. INFORMACOES GERAIS',{bold:true,size:24,color:DG,before:200,after:100}));
-    ch.push(p('1.1 IDENTIFICACAO DA EMPRESA',{bold:true,size:22,before:100,after:80}));
-    ch.push(tblInfo('Dados da empresa vistoriada',['Razao social: '+(d.razao||''),'Nome fantasia: '+(d.fantasia||'')+'  |  CNPJ: '+(d.cnpj||''),'CNAE: '+(d.cnae||''),'Grau de risco: '+d.grau,'Endereco: '+(d.local||'')]));
-    ch.push(p('',{after:120}));
-    ch.push(p('1.2 IDENTIFICACAO DA EMPRESA RESPONSAVEL PELA INSPECAO',{bold:true,size:22,before:100,after:80}));
-    ch.push(tblInfo('A. & R. Assessoria Ambiental Ltda',['Nome fantasia: A & R Assessoria Ambiental e Seguranca Do Trabalho  |  CNPJ: 43.805.236/0001-08','Endereco: Rodovia dos Pioneiros, s/n, Paragominas - PA.','Responsavel tecnico: '+(d.resp||'')+'  |  Profissao: Eng. de Seguranca do Trabalho','Registro: '+(d.crea||''),'Contato: (91) 98503-1770  |  E-mail: andrades.rabelo@gmail.com']));
-    ch.push(p('',{after:120}));
-    ch.push(p('2. OBJETIVO E METODOLOGIA',{bold:true,size:24,color:DG,before:200,after:100}));
-    parsed.objetivo.split('
-').filter(function(l){return l.trim();}).forEach(function(l){ch.push(p(l,{after:100}));});
-    ch.push(p('',{after:120}));
-    ch.push(p('3. PRINCIPAIS RESULTADOS',{bold:true,size:24,color:DG,before:200,after:100}));
-    parsed.itens.forEach(function(item){ch.push(tblNC(item));ch.push(p('',{after:80}));});
-    ch.push(p('4. PONTOS POSITIVOS OBSERVADOS',{bold:true,size:24,color:DG,before:200,after:100}));
-    parsed.pp.split('
-').filter(function(l){return l.trim();}).forEach(function(l){ch.push(p(l,{after:80}));});
-    ch.push(p('',{after:120}));
-    ch.push(p('5. PLANO DE ACAO',{bold:true,size:24,color:DG,before:200,after:100}));
-    ch.push(new D.Table({width:{size:CW,type:D.WidthType.DXA},columnWidths:[600,4000,1800,1300,1326],rows:rowsPA}));
-    ch.push(p('',{after:120}));
-    ch.push(p('6. CONCLUSAO',{bold:true,size:24,color:DG,before:200,after:100}));
-    parsed.conclusao.split('
-').filter(function(l){return l.trim();}).forEach(function(l){ch.push(p(l,{after:100}));});
-    ch.push(p('',{after:400}));
-    ch.push(p('________________________________________',{center:true,after:40}));
-    ch.push(p((d.resp||'').toUpperCase(),{bold:true,center:true,color:DG,after:40}));
-    ch.push(p('Engenheira de Seguranca do Trabalho',{center:true,after:40}));
-    ch.push(p(d.crea||'',{center:true,after:40}));
-    ch.push(p((d.cidade||'Paragominas-PA')+', '+(d.datainsp||''),{center:true,after:40}));
-    var doc = new D.Document({ styles:{default:{document:{run:{font:'Arial',size:22}}}}, sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1080,bottom:1080,left:1080,right:1080}}},children:ch}] });
+
+    var rowsPA = [new D.TableRow({ children: [cell('ACAO', { w: 600, bold: true, bg: DG, color: 'FFFFFF' }), cell('DESCRICAO', { w: 4000, bold: true, bg: DG, color: 'FFFFFF' }), cell('RESPONSABILIDADE', { w: 1800, bold: true, bg: DG, color: 'FFFFFF' }), cell('PRIORIDADE', { w: 1300, bold: true, bg: DG, color: 'FFFFFF' }), cell('STATUS', { w: 1326, bold: true, bg: DG, color: 'FFFFFF' })] })];
+    parsed.acoes.forEach(function(a) {
+      rowsPA.push(new D.TableRow({ children: [cell(a.num || '', { w: 600, center: true }), cell(a.desc || '', { w: 4000 }), cell(a.resp || 'EMPRESA', { w: 1800 }), cell(a.prior || '', { w: 1300, center: true }), cell(a.status || 'PENDENTE', { w: 1326, center: true })] }));
+    });
+
+    var children = [];
+    children.push(p('RELATORIO DE INSPECAO TECNICA DE SEGURANCA DO TRABALHO', { bold: true, size: 28, center: true, color: DG, before: 240, after: 80 }));
+    children.push(p(d.cidade || 'Paragominas-PA', { center: true, size: 22, color: '555555' }));
+    children.push(p('2026', { center: true, size: 22, color: '555555', after: 240 }));
+    children.push(p('1. INFORMACOES GERAIS', { bold: true, size: 24, color: DG, before: 200, after: 100 }));
+    children.push(p('1.1 IDENTIFICACAO DA EMPRESA', { bold: true, size: 22, before: 100, after: 80 }));
+    children.push(tblInfo('Dados da empresa vistoriada', ['Razao social: ' + (d.razao || ''), 'Nome fantasia: ' + (d.fantasia || '') + '  |  CNPJ: ' + (d.cnpj || ''), 'CNAE: ' + (d.cnae || ''), 'Grau de risco: ' + d.grau, 'Endereco: ' + (d.local || '')]));
+    children.push(p('', { after: 120 }));
+    children.push(p('1.2 IDENTIFICACAO DA EMPRESA RESPONSAVEL PELA INSPECAO', { bold: true, size: 22, before: 100, after: 80 }));
+    children.push(tblInfo('A. & R. Assessoria Ambiental Ltda', ['Nome fantasia: A & R Assessoria Ambiental e Seguranca Do Trabalho  |  CNPJ: 43.805.236/0001-08', 'Endereco: Rodovia dos Pioneiros, s/n, anexo ao Posto Paragominas, bairro Acaizal, Paragominas - PA.', 'Responsavel tecnico: ' + (d.resp || '') + '  |  Profissao: Eng. de Seguranca do Trabalho', 'Registro: ' + (d.crea || ''), 'Contato: (91) 98503-1770  |  E-mail: andrades.rabelo@gmail.com']));
+    children.push(p('', { after: 120 }));
+    children.push(p('2. OBJETIVO E METODOLOGIA', { bold: true, size: 24, color: DG, before: 200, after: 100 }));
+    parsed.objetivo.split('\n').filter(function(l) { return l.trim(); }).forEach(function(l) { children.push(p(l, { after: 100 })); });
+    children.push(p('', { after: 120 }));
+    children.push(p('3. PRINCIPAIS RESULTADOS', { bold: true, size: 24, color: DG, before: 200, after: 100 }));
+    parsed.itens.forEach(function(item) { children.push(tblNC(item)); children.push(p('', { after: 80 })); });
+    children.push(p('4. PONTOS POSITIVOS OBSERVADOS', { bold: true, size: 24, color: DG, before: 200, after: 100 }));
+    parsed.pp.split('\n').filter(function(l) { return l.trim(); }).forEach(function(l) { children.push(p(l, { after: 80 })); });
+    children.push(p('', { after: 120 }));
+    children.push(p('5. PLANO DE ACAO', { bold: true, size: 24, color: DG, before: 200, after: 100 }));
+    children.push(new D.Table({ width: { size: CW, type: D.WidthType.DXA }, columnWidths: [600, 4000, 1800, 1300, 1326], rows: rowsPA }));
+    children.push(p('', { after: 120 }));
+    children.push(p('6. CONCLUSAO', { bold: true, size: 24, color: DG, before: 200, after: 100 }));
+    parsed.conclusao.split('\n').filter(function(l) { return l.trim(); }).forEach(function(l) { children.push(p(l, { after: 100 })); });
+    children.push(p('', { after: 400 }));
+    children.push(p('________________________________________', { center: true, after: 40 }));
+    children.push(p((d.resp || '').toUpperCase(), { bold: true, center: true, color: DG, after: 40 }));
+    children.push(p('Engenheira de Seguranca do Trabalho', { center: true, after: 40 }));
+    children.push(p(d.crea || '', { center: true, after: 40 }));
+    children.push(p((d.cidade || 'Paragominas-PA') + ', ' + (d.datainsp || ''), { center: true, after: 40 }));
+
+    var doc = new D.Document({
+      styles: { default: { document: { run: { font: 'Arial', size: 22 } } } },
+      sections: [{ properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1080, bottom: 1080, left: 1080, right: 1080 } } }, children: children }]
+    });
+
     var buffer = await D.Packer.toBuffer(doc);
-    var blob = new Blob([buffer],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+    var blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = 'Relatorio_Vistoria_'+(d.fantasia||d.razao||'empresa').replace(/s+/g,'_')+'.docx';
+    a.download = 'Relatorio_Vistoria_' + (d.fantasia || d.razao || 'empresa').replace(/\s+/g, '_') + '.docx';
     a.click();
     URL.revokeObjectURL(url);
-    setS('Word baixado!','ok');
-    setTimeout(function(){setS('');},3000);
+    setS('Arquivo Word baixado!', 'ok');
+    setTimeout(function() { setS(''); }, 3000);
   } catch(e) {
-    setS('Erro Word: '+e.message,'err');
+    setS('Erro ao gerar Word: ' + e.message, 'err');
     console.error(e);
   } finally {
     showAn(false);
@@ -449,18 +446,20 @@ Grau: '+item.grau,{w:4426}),cell(item.correcao,{w:2200})]})
 
 function copiar() {
   navigator.clipboard.writeText(document.getElementById('rb').textContent)
-    .then(function(){setS('Copiado!','ok');}).catch(function(){setS('Erro.','err');});
-  setTimeout(function(){setS('');},2500);
+    .then(function() { setS('Copiado!', 'ok'); })
+    .catch(function() { setS('Erro ao copiar.', 'err'); });
+  setTimeout(function() { setS(''); }, 2500);
 }
+
 function limpar() {
-  files=[]; tg.innerHTML=''; updPC(); ultimoRelatorio=''; dadosForm={};
-  ['razao','fantasia','cnpj','cnae','local','obs','datainsp'].forEach(function(id){document.getElementById(id).value='';});
+  files = []; tg.innerHTML = ''; updPC(); ultimoRelatorio = ''; dadosForm = {};
+  ['razao','fantasia','cnpj','cnae','local','obs','datainsp'].forEach(function(id) { document.getElementById(id).value = ''; });
   document.getElementById('rh').classList.remove('vis');
   document.getElementById('rb').classList.remove('vis');
-  document.getElementById('rb').textContent=''; setS('');
-  document.getElementById('pb').style.display='none';
-  btnW.disabled=true;
+  document.getElementById('rb').textContent = ''; setS('');
+  document.getElementById('pb').style.display = 'none';
+  btnW.disabled = true;
 }
 </script>
 </body>
-  </html>
+</html>
