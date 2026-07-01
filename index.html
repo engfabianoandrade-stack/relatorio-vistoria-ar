@@ -1,64 +1,64 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Relatorio de Vistoria - A&amp;R Assessoria</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Relatorio de Vistoria - A&R Assessoria</title>
 <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: Arial, sans-serif; background: #f4f6f4; color: #1a1a1a; min-height: 100vh; }
-header { background: #1F4E2F; color: #fff; padding: 18px 32px; display: flex; align-items: center; gap: 16px; }
-header .logo { font-size: 22px; font-weight: 700; color: #C5A028; letter-spacing: 1px; }
-header .tagline { font-size: 13px; color: #aad4b8; }
-.container { max-width: 820px; margin: 32px auto; padding: 0 20px 60px; }
-.card { background: #fff; border-radius: 12px; border: 1px solid #e0e7e0; padding: 24px; margin-bottom: 20px; }
-.section-title { font-size: 12px; font-weight: 700; color: #1F4E2F; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; border-bottom: 2px solid #C5A028; padding-bottom: 6px; }
-label.fl { font-size: 13px; color: #555; display: block; margin-bottom: 5px; font-weight: 600; }
-input[type="text"], textarea, select { width: 100%; padding: 9px 12px; font-size: 14px; border: 1px solid #cdd8cd; border-radius: 7px; background: #f9fbf9; color: #1a1a1a; font-family: Arial, sans-serif; }
-textarea { resize: vertical; min-height: 60px; }
-.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-.mb14 { margin-bottom: 14px; }
-.drop-zone { border: 2px dashed #a0c4a8; border-radius: 10px; padding: 28px 16px; text-align: center; cursor: pointer; background: #f0f7f1; position: relative; }
-.drop-zone:hover, .drop-zone.dragover { border-color: #1F4E2F; background: #e6f2e8; }
-.drop-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-.dz-icon { font-size: 32px; margin-bottom: 8px; }
-.dz-text { font-size: 15px; color: #1F4E2F; font-weight: 600; }
-.dz-hint { font-size: 12px; color: #888; margin-top: 4px; }
-.thumb-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
-.thumb-item { position: relative; width: 90px; height: 90px; border-radius: 8px; overflow: hidden; border: 1.5px solid #c0d8c0; }
-.thumb-item img { width: 100%; height: 100%; object-fit: cover; }
-.thumb-rb { position: absolute; top: 3px; right: 3px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; }
-.thumb-tl { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.5); color: #fff; font-size: 9px; padding: 2px 4px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pcnt { font-size: 12px; color: #888; margin-top: 8px; }
-.btn-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
-.btn-p { background: #1F4E2F; color: #fff; border: none; border-radius: 8px; padding: 11px 24px; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
-.btn-p:hover { background: #164023; }
-.btn-p:disabled { background: #9ab8a0; cursor: not-allowed; }
-.btn-s { background: #fff; color: #1F4E2F; border: 1.5px solid #1F4E2F; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
-.btn-s:hover { background: #f0f7f1; }
-.btn-s:disabled { opacity: 0.4; cursor: not-allowed; }
-.btn-gold { background: #C5A028; color: #fff; border: none; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
-.btn-gold:hover { background: #a8881f; }
-.btn-gold:disabled { opacity: 0.4; cursor: not-allowed; }
-.pbar { height: 4px; background: #e0e7e0; border-radius: 4px; margin: 12px 0 4px; overflow: hidden; display: none; }
-.pfill { height: 100%; background: #1F4E2F; border-radius: 4px; transition: width 0.3s ease; }
-.smsg { font-size: 13px; color: #555; min-height: 18px; margin-top: 4px; }
-.smsg.err { color: #c0392b; }
-.smsg.ok { color: #1F4E2F; font-weight: 600; }
-.rpt-hdr { background: #1F4E2F; color: #fff; border-radius: 10px 10px 0 0; padding: 14px 20px; display: none; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
-.rpt-hdr.vis { display: flex; }
-.rpt-hdr h3 { font-size: 15px; font-weight: 700; }
-.badge-ok { background: #C5A028; color: #fff; font-size: 12px; font-weight: 700; padding: 3px 12px; border-radius: 20px; }
-.rpt-body { background: #f9fbf9; border: 1px solid #c0d8c0; border-top: none; border-radius: 0 0 10px 10px; padding: 20px; font-size: 13px; line-height: 1.8; display: none; max-height: 560px; overflow-y: auto; white-space: pre-wrap; font-family: monospace; }
-.rpt-body.vis { display: block; }
-.analyzing { display: none; align-items: center; gap: 8px; background: #e6f2e8; color: #1F4E2F; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 20px; }
-.dot { width: 7px; height: 7px; background: #1F4E2F; border-radius: 50%; animation: pulse 1s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
-footer { text-align: center; font-size: 12px; color: #999; margin-top: 40px; }
-footer span { color: #1F4E2F; font-weight: 600; }
-@media (max-width: 600px) { .g2, .g3 { grid-template-columns: 1fr; } header { flex-direction: column; } }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f4f6f4;color:#1a1a1a;min-height:100vh}
+header{background:#1F4E2F;color:#fff;padding:18px 32px;display:flex;align-items:center;gap:16px}
+.logo{font-size:22px;font-weight:700;color:#C5A028;letter-spacing:1px}
+.tagline{font-size:13px;color:#aad4b8}
+.container{max-width:820px;margin:32px auto;padding:0 20px 60px}
+.card{background:#fff;border-radius:12px;border:1px solid #e0e7e0;padding:24px;margin-bottom:20px}
+.stitle{font-size:12px;font-weight:700;color:#1F4E2F;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;border-bottom:2px solid #C5A028;padding-bottom:6px}
+label.fl{font-size:13px;color:#555;display:block;margin-bottom:5px;font-weight:600}
+input[type=text],textarea,select{width:100%;padding:9px 12px;font-size:14px;border:1px solid #cdd8cd;border-radius:7px;background:#f9fbf9;color:#1a1a1a;font-family:Arial,sans-serif}
+textarea{resize:vertical;min-height:60px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+.mb14{margin-bottom:14px}
+.dz{border:2px dashed #a0c4a8;border-radius:10px;padding:28px 16px;text-align:center;cursor:pointer;background:#f0f7f1;position:relative}
+.dz:hover,.dz.over{border-color:#1F4E2F;background:#e6f2e8}
+.dz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-icon{font-size:32px;margin-bottom:8px}
+.dz-text{font-size:15px;color:#1F4E2F;font-weight:600}
+.dz-hint{font-size:12px;color:#888;margin-top:4px}
+.tgrid{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.titem{position:relative;width:90px;height:90px;border-radius:8px;overflow:hidden;border:1.5px solid #c0d8c0}
+.titem img{width:100%;height:100%;object-fit:cover}
+.trm{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:12px;line-height:20px;text-align:center}
+.tlbl{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.5);color:#fff;font-size:9px;padding:2px 4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcnt{font-size:12px;color:#888;margin-top:8px}
+.brow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.bp{background:#1F4E2F;color:#fff;border:none;border-radius:8px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.bp:hover{background:#164023}
+.bp:disabled{background:#9ab8a0;cursor:not-allowed}
+.bs{background:#fff;color:#1F4E2F;border:1.5px solid #1F4E2F;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.bs:hover{background:#f0f7f1}
+.bs:disabled{opacity:.4;cursor:not-allowed}
+.bg{background:#C5A028;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.bg:hover{background:#a8881f}
+.bg:disabled{opacity:.4;cursor:not-allowed}
+.pbar{height:4px;background:#e0e7e0;border-radius:4px;margin:12px 0 4px;overflow:hidden;display:none}
+.pfill{height:100%;background:#1F4E2F;border-radius:4px;transition:width .3s}
+.smsg{font-size:13px;color:#555;min-height:18px;margin-top:4px}
+.smsg.err{color:#c0392b}
+.smsg.ok{color:#1F4E2F;font-weight:600}
+.rhdr{background:#1F4E2F;color:#fff;border-radius:10px 10px 0 0;padding:14px 20px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:20px}
+.rhdr.vis{display:flex}
+.rhdr h3{font-size:15px;font-weight:700}
+.bok{background:#C5A028;color:#fff;font-size:12px;font-weight:700;padding:3px 12px;border-radius:20px}
+.rbody{background:#f9fbf9;border:1px solid #c0d8c0;border-top:none;border-radius:0 0 10px 10px;padding:20px;font-size:13px;line-height:1.8;display:none;max-height:560px;overflow-y:auto;white-space:pre-wrap;font-family:monospace}
+.rbody.vis{display:block}
+.anl{display:none;align-items:center;gap:8px;background:#e6f2e8;color:#1F4E2F;font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px}
+.dot{width:7px;height:7px;background:#1F4E2F;border-radius:50%;animation:pp 1s infinite}
+@keyframes pp{0%,100%{opacity:1}50%{opacity:.25}}
+footer{text-align:center;font-size:12px;color:#999;margin-top:40px}
+footer span{color:#1F4E2F;font-weight:600}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}header{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -70,183 +70,331 @@ footer span { color: #1F4E2F; font-weight: 600; }
 </header>
 <div class="container">
   <div class="card">
-    <div class="section-title">Identificacao da empresa vistoriada</div>
-    <div class="mb14"><label class="fl">Razao social</label><input type="text" id="razao" placeholder="Ex: ZORZI CONSTRUTORA E INCORPORADORA LTDA" /></div>
+    <div class="stitle">Identificacao da empresa vistoriada</div>
+    <div class="mb14"><label class="fl">Razao social</label><input type="text" id="razao" placeholder="Ex: ZORZI CONSTRUTORA E INCORPORADORA LTDA"/></div>
     <div class="g3">
-      <div><label class="fl">Nome fantasia</label><input type="text" id="fantasia" placeholder="Ex: ZORZI" /></div>
-      <div><label class="fl">CNPJ</label><input type="text" id="cnpj" placeholder="00.000.000/0001-00" /></div>
+      <div><label class="fl">Nome fantasia</label><input type="text" id="fantasia" placeholder="Ex: ZORZI"/></div>
+      <div><label class="fl">CNPJ</label><input type="text" id="cnpj" placeholder="00.000.000/0001-00"/></div>
       <div><label class="fl">Grau de risco</label><select id="grau"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option></select></div>
     </div>
     <div class="g2">
-      <div><label class="fl">CNAE</label><input type="text" id="cnae" placeholder="Ex: 41.20-4-00 - Construcao de edificios" /></div>
-      <div><label class="fl">Endereco / local</label><input type="text" id="local" placeholder="Rua, numero, bairro, cidade" /></div>
+      <div><label class="fl">CNAE</label><input type="text" id="cnae" placeholder="Ex: 41.20-4-00"/></div>
+      <div><label class="fl">Endereco</label><input type="text" id="local" placeholder="Rua, numero, bairro, cidade"/></div>
     </div>
   </div>
   <div class="card">
-    <div class="section-title">Dados da inspecao</div>
+    <div class="stitle">Dados da inspecao</div>
     <div class="g2">
-      <div><label class="fl">Responsavel tecnico</label><input type="text" id="resp" value="Isabela Pirola da Silva" /></div>
-      <div><label class="fl">Registro CREA</label><input type="text" id="crea" value="CREA 1515202887PA" /></div>
+      <div><label class="fl">Responsavel tecnico</label><input type="text" id="resp" value="Isabela Pirola da Silva"/></div>
+      <div><label class="fl">Registro CREA</label><input type="text" id="crea" value="CREA 1515202887PA"/></div>
     </div>
     <div class="g2">
-      <div><label class="fl">Data da inspecao</label><input type="text" id="datainsp" placeholder="Ex: 28 de junho de 2026" /></div>
-      <div><label class="fl">Cidade / UF</label><input type="text" id="cidade" value="Paragominas-PA" /></div>
+      <div><label class="fl">Data da inspecao</label><input type="text" id="datainsp" placeholder="Ex: 28 de junho de 2026"/></div>
+      <div><label class="fl">Cidade / UF</label><input type="text" id="cidade" value="Paragominas-PA"/></div>
     </div>
-    <div><label class="fl">Observacoes (opcional)</label><textarea id="obs" placeholder="Informacoes sobre o ambiente, atividade principal..."></textarea></div>
+    <div><label class="fl">Observacoes (opcional)</label><textarea id="obs" placeholder="Informacoes sobre o ambiente, atividade..."></textarea></div>
   </div>
   <div class="card">
-    <div class="section-title">Fotos da vistoria</div>
-    <div class="drop-zone" id="dz">
-      <input type="file" id="fi" accept="image/*" multiple />
+    <div class="stitle">Fotos da vistoria</div>
+    <div class="dz" id="dz">
+      <input type="file" id="fi" accept="image/*" multiple/>
       <div class="dz-icon">&#128247;</div>
       <div class="dz-text">Clique ou arraste as fotos aqui</div>
       <div class="dz-hint">JPG, PNG, WEBP &bull; varias fotos aceitas</div>
     </div>
-    <div class="thumb-grid" id="tg"></div>
+    <div class="tgrid" id="tg"></div>
     <div class="pcnt" id="pc"></div>
   </div>
   <div class="card">
-    <div class="btn-row">
-      <button class="btn-p" id="btnG" disabled onclick="gerar()">&#9889; Gerar relatorio</button>
-      <button class="btn-gold" id="btnW" disabled onclick="gerarWord()">&#128196; Baixar Word</button>
-      <button class="btn-s" onclick="limpar()">&#128465; Limpar</button>
-      <span class="analyzing" id="ab"><span class="dot"></span><span id="abLabel">Analisando...</span></span>
+    <div class="brow">
+      <button class="bp" id="btnG" disabled onclick="gerar()">&#9889; Gerar relatorio</button>
+      <button class="bg" id="btnW" disabled onclick="gerarWord()">&#128196; Baixar Word</button>
+      <button class="bs" onclick="limpar()">&#128465; Limpar</button>
+      <span class="anl" id="ab"><span class="dot"></span><span id="abl">Analisando...</span></span>
     </div>
     <div class="pbar" id="pb"><div class="pfill" id="pf" style="width:0%"></div></div>
     <div class="smsg" id="sm"></div>
   </div>
-  <div class="rpt-hdr" id="rh">
+  <div class="rhdr" id="rh">
     <h3>Relatorio gerado</h3>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <span class="badge-ok">Concluido</span>
-      <button class="btn-s" style="color:#fff;border-color:#fff;" onclick="copiar()">Copiar</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span class="bok">Concluido</span>
+      <button class="bs" style="color:#fff;border-color:#fff" onclick="copiar()">Copiar</button>
     </div>
   </div>
-  <div class="rpt-body" id="rb"></div>
+  <div class="rbody" id="rb"></div>
   <footer>Desenvolvido por <span>A&amp;R Assessoria Ambiental e Seguranca do Trabalho</span> &bull; Paragominas-PA</footer>
 </div>
 <script>
-var _k=['sk-ant-api03-y-jJKX_Ib','d-6rzJVwUVmHaM_n3qba4ifzevkvZJCMS','tIfsVtqlXV0MNH0L2WYTU3gk0lDrBbKn_h6GtpOTyo5w-oKnAvAAA'].join('');
-var files=[],ultimoRelatorio='',dadosForm={};
-var dz=document.getElementById('dz'),fi=document.getElementById('fi'),tg=document.getElementById('tg'),pc=document.getElementById('pc'),btnG=document.getElementById('btnG'),btnW=document.getElementById('btnW');
-dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('dragover');});
-dz.addEventListener('dragleave',function(){dz.classList.remove('dragover');});
-dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('dragover');addFiles(Array.from(e.dataTransfer.files));});
-fi.addEventListener('change',function(e){addFiles(Array.from(e.target.files));fi.value='';});
-function addFiles(nf){nf.filter(function(f){return f.type.startsWith('image/');}).forEach(function(f){if(files.find(function(x){return x.name===f.name&&x.size===f.size;}))return;var idx=files.length;files.push(f);var r=new FileReader();r.onload=function(ev){var d=document.createElement('div');d.className='thumb-item';var img=document.createElement('img');img.src=ev.target.result;img.alt='Foto '+(idx+1);var btn=document.createElement('button');btn.className='thumb-rb';btn.textContent='x';(function(i){btn.onclick=function(){removeF(i);};})(idx);var lbl=document.createElement('div');lbl.className='thumb-tl';lbl.textContent='Foto '+(idx+1);d.appendChild(img);d.appendChild(btn);d.appendChild(lbl);tg.appendChild(d);};r.readAsDataURL(f);});updPC();}
-function removeF(idx){files.splice(idx,1);tg.innerHTML='';var k=files.slice();files=[];addFiles(k);}
-function updPC(){var n=files.length;pc.textContent=n===0?'':n+' foto'+(n>1?'s':'')+' selecionada'+(n>1?'s':'');btnG.disabled=n===0;}
-function setS(m,t){var el=document.getElementById('sm');el.textContent=m;el.className='smsg'+(t?' '+t:'');}
-function setP(v){document.getElementById('pf').style.width=v+'%';}
-function showAn(s,l){document.getElementById('ab').style.display=s?'inline-flex':'none';document.getElementById('abLabel').textContent=l||'Analisando...';}
-function lerForm(){return{razao:document.getElementById('razao').value.trim(),fantasia:document.getElementById('fantasia').value.trim(),cnpj:document.getElementById('cnpj').value.trim(),grau:document.getElementById('grau').value,cnae:document.getElementById('cnae').value.trim(),local:document.getElementById('local').value.trim(),resp:document.getElementById('resp').value.trim(),crea:document.getElementById('crea').value.trim(),datainsp:document.getElementById('datainsp').value.trim(),cidade:document.getElementById('cidade').value.trim(),obs:document.getElementById('obs').value.trim()};}
-function toB64(f){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(e){res(e.target.result.split(',')[1]);};r.onerror=function(){rej(new Error('Erro'));};r.readAsDataURL(f);});}
-async function gerar(){
-  if(!files.length)return;
-  dadosForm=lerForm();var d=dadosForm;
-  btnG.disabled=true;btnW.disabled=true;showAn(true);
-  document.getElementById('pb').style.display='block';
+var K = 'sk-ant-api03-y-jJKX_Ib' + 'd-6rzJVwUVmHaM_n3qba4ifzevkvZJCMS' + 'tIfsVtqlXV0MNH0L2WYTU3gk0lDrBbKn_h6GtpOTyo5w-oKnAvAAA';
+var F = [], REL = '', FORM = {};
+
+// Setup upload zone
+var dz = document.getElementById('dz');
+var fi = document.getElementById('fi');
+dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('over'); });
+dz.addEventListener('dragleave', function() { dz.classList.remove('over'); });
+dz.addEventListener('drop', function(e) { e.preventDefault(); dz.classList.remove('over'); add(Array.from(e.dataTransfer.files)); });
+fi.addEventListener('change', function(e) { add(Array.from(e.target.files)); fi.value = ''; });
+
+function add(list) {
+  list.filter(function(f) { return f.type.startsWith('image/'); }).forEach(function(f) {
+    if (F.find(function(x) { return x.name === f.name && x.size === f.size; })) return;
+    var i = F.length;
+    F.push(f);
+    var r = new FileReader();
+    r.onload = function(e) {
+      var wrap = document.createElement('div'); wrap.className = 'titem';
+      var img = document.createElement('img'); img.src = e.target.result; img.alt = '';
+      var btn = document.createElement('button'); btn.className = 'trm'; btn.textContent = 'x';
+      btn.setAttribute('data-i', i);
+      btn.onclick = function() { rm(parseInt(this.getAttribute('data-i'))); };
+      var lbl = document.createElement('div'); lbl.className = 'tlbl'; lbl.textContent = 'Foto ' + (i + 1);
+      wrap.appendChild(img); wrap.appendChild(btn); wrap.appendChild(lbl);
+      document.getElementById('tg').appendChild(wrap);
+    };
+    r.readAsDataURL(f);
+  });
+  cnt();
+}
+
+function rm(i) {
+  F.splice(i, 1);
+  document.getElementById('tg').innerHTML = '';
+  var tmp = F.slice(); F = [];
+  add(tmp);
+}
+
+function cnt() {
+  var n = F.length;
+  document.getElementById('pc').textContent = n ? n + ' foto' + (n > 1 ? 's' : '') + ' selecionada' + (n > 1 ? 's' : '') : '';
+  document.getElementById('btnG').disabled = !n;
+}
+
+function sS(m, t) { var e = document.getElementById('sm'); e.textContent = m; e.className = 'smsg' + (t ? ' ' + t : ''); }
+function sP(v) { document.getElementById('pf').style.width = v + '%'; }
+function sA(s, l) { document.getElementById('ab').style.display = s ? 'inline-flex' : 'none'; document.getElementById('abl').textContent = l || 'Analisando...'; }
+function lF() {
+  return {
+    razao: document.getElementById('razao').value.trim(),
+    fantasia: document.getElementById('fantasia').value.trim(),
+    cnpj: document.getElementById('cnpj').value.trim(),
+    grau: document.getElementById('grau').value,
+    cnae: document.getElementById('cnae').value.trim(),
+    local: document.getElementById('local').value.trim(),
+    resp: document.getElementById('resp').value.trim(),
+    crea: document.getElementById('crea').value.trim(),
+    datainsp: document.getElementById('datainsp').value.trim(),
+    cidade: document.getElementById('cidade').value.trim(),
+    obs: document.getElementById('obs').value.trim()
+  };
+}
+function b64(f) {
+  return new Promise(function(res, rej) {
+    var r = new FileReader();
+    r.onload = function(e) { res(e.target.result.split(',')[1]); };
+    r.onerror = function() { rej(new Error('Erro leitura')); };
+    r.readAsDataURL(f);
+  });
+}
+
+async function gerar() {
+  if (!F.length) return;
+  FORM = lF(); var d = FORM;
+  document.getElementById('btnG').disabled = true;
+  document.getElementById('btnW').disabled = true;
+  sA(true); document.getElementById('pb').style.display = 'block';
   document.getElementById('rh').classList.remove('vis');
   document.getElementById('rb').classList.remove('vis');
-  document.getElementById('rb').textContent='';
-  setP(5);setS('Preparando fotos...');
-  try{
-    var ic=[];
-    for(var i=0;i<files.length;i++){
-      var b=await toB64(files[i]);
-      ic.push({type:'image',source:{type:'base64',media_type:files[i].type||'image/jpeg',data:b}});
-      ic.push({type:'text',text:'[Foto '+(i+1)+': '+files[i].name+']'});
-      setP(5+Math.round(((i+1)/files.length)*35));
+  document.getElementById('rb').textContent = '';
+  sP(5); sS('Preparando fotos...');
+  try {
+    var imgs = [];
+    for (var i = 0; i < F.length; i++) {
+      var b = await b64(F[i]);
+      imgs.push({ type: 'image', source: { type: 'base64', media_type: F[i].type || 'image/jpeg', data: b } });
+      imgs.push({ type: 'text', text: '[Foto ' + (i + 1) + ': ' + F[i].name + ']' });
+      sP(5 + Math.round(((i + 1) / F.length) * 35));
     }
-    setS('Analisando com IA...');setP(45);
-    var mp=[];
-    if(d.razao)mp.push('Razao social: '+d.razao);
-    if(d.fantasia)mp.push('Nome fantasia: '+d.fantasia);
-    if(d.cnpj)mp.push('CNPJ: '+d.cnpj);
-    if(d.cnae)mp.push('CNAE: '+d.cnae);
-    mp.push('Grau de risco: '+d.grau);
-    if(d.local)mp.push('Endereco: '+d.local);
-    if(d.resp)mp.push('Responsavel: '+d.resp);
-    if(d.crea)mp.push('Registro: '+d.crea);
-    if(d.datainsp)mp.push('Data: '+d.datainsp);
-    if(d.cidade)mp.push('Cidade: '+d.cidade);
-    if(d.obs)mp.push('Obs: '+d.obs);
-    var meta=mp.join('\n');
-    var sys='Voce e engenheiro de seguranca do trabalho. Gere relatorios tecnicos formais em portugues. Cite NRs com numeracao exata. Sem markdown.';
-    var prm='Analise as '+files.length+' foto(s) e gere relatorio.\nDADOS:\n'+meta+'\n\n---OBJETIVO---\n[objetivo e metodologia]\n\n---NAO_CONFORMIDADES---\n[Para cada foto:\n###\nITEM: [n]\nTITULO: [titulo]\nFOTO: Foto [n]\nSITUACAO: [descricao]\nNORMA: [NR]\nGRAU: [CRITICO/MODERADO/BAIXO]\nCORRECAO: [acao]\n###]\n\n---PONTOS_POSITIVOS---\n[pontos]\n\n---PLANO_ACAO---\n[ACAO|n|desc|EMPRESA|ALTO/MEDIO/BAIXO|PENDENTE]\n\n---CONCLUSAO---\n[conclusao terminando com: O cumprimento dessas recomendacoes e essencial para prevenir acidentes, proteger colaboradores e promover a melhoria continua dos processos.]';
-    var rsp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true','x-api-key':_k,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:sys,messages:[{role:'user',content:[{type:'text',text:prm}].concat(ic)}]})});
-    setP(88);
-    if(!rsp.ok){var er=await rsp.json().catch(function(){return{};});throw new Error((er.error&&er.error.message)||'Erro '+rsp.status);}
-    var data=await rsp.json();
-    var texto=data.content.map(function(b){return b.text||'';}).join('').trim();
-    if(!texto)throw new Error('Resposta vazia.');
-    ultimoRelatorio=texto;setP(100);setS('Relatorio gerado!','ok');showAn(false);
-    var leg=texto.replace(/---\w+---/g,'').replace(/###/g,'\n---\n').replace(/^(ITEM:|TITULO:|FOTO:|SITUACAO:|NORMA:|GRAU:|CORRECAO:|ACAO\|)/gm,function(m){return '\n'+m;}).replace(/\n{3,}/g,'\n\n').trim();
-    document.getElementById('rb').textContent=leg;
+    sS('Analisando com IA...'); sP(45);
+    var mp = [];
+    if (d.razao) mp.push('Razao social: ' + d.razao);
+    if (d.fantasia) mp.push('Nome fantasia: ' + d.fantasia);
+    if (d.cnpj) mp.push('CNPJ: ' + d.cnpj);
+    if (d.cnae) mp.push('CNAE: ' + d.cnae);
+    mp.push('Grau de risco: ' + d.grau);
+    if (d.local) mp.push('Endereco: ' + d.local);
+    if (d.resp) mp.push('Responsavel: ' + d.resp);
+    if (d.crea) mp.push('Registro: ' + d.crea);
+    if (d.datainsp) mp.push('Data: ' + d.datainsp);
+    if (d.cidade) mp.push('Cidade: ' + d.cidade);
+    if (d.obs) mp.push('Obs: ' + d.obs);
+    var meta = mp.join('\n');
+    var sys = 'Voce e engenheiro de seguranca do trabalho. Gere relatorios tecnicos formais em portugues. Cite NRs com numeracao exata. Sem markdown.';
+    var prm = [
+      'Analise as ' + F.length + ' foto(s) e gere relatorio.',
+      'DADOS:',
+      meta,
+      '',
+      '---OBJETIVO---',
+      '[2 paragrafos: objetivo e metodologia]',
+      '',
+      '---NAO_CONFORMIDADES---',
+      '[Para cada foto:',
+      '###',
+      'ITEM: [n]',
+      'TITULO: [titulo]',
+      'FOTO: Foto [n]',
+      'SITUACAO: [descricao objetiva]',
+      'NORMA: [NR com item exato]',
+      'GRAU: [CRITICO ou MODERADO ou BAIXO]',
+      'CORRECAO: [acao corretiva]',
+      '###]',
+      '',
+      '---PONTOS_POSITIVOS---',
+      '[pontos positivos ou ausencia]',
+      '',
+      '---PLANO_ACAO---',
+      '[ACAO|n|descricao|EMPRESA|ALTO ou MEDIO ou BAIXO|PENDENTE]',
+      '',
+      '---CONCLUSAO---',
+      '[conclusao terminando com: O cumprimento dessas recomendacoes e essencial para prevenir acidentes, proteger colaboradores e promover a melhoria continua dos processos.]'
+    ].join('\n');
+    var rsp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true',
+        'x-api-key': K,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: sys,
+        messages: [{ role: 'user', content: [{ type: 'text', text: prm }].concat(imgs) }]
+      })
+    });
+    sP(88);
+    if (!rsp.ok) {
+      var er = await rsp.json().catch(function() { return {}; });
+      throw new Error((er.error && er.error.message) || 'Erro ' + rsp.status);
+    }
+    var data = await rsp.json();
+    var txt = data.content.map(function(b) { return b.text || ''; }).join('').trim();
+    if (!txt) throw new Error('Resposta vazia.');
+    REL = txt; sP(100); sS('Relatorio gerado!', 'ok'); sA(false);
+    var leg = txt
+      .replace(/---\w+---/g, '')
+      .replace(/###/g, '\n---\n')
+      .replace(/^(ITEM:|TITULO:|FOTO:|SITUACAO:|NORMA:|GRAU:|CORRECAO:|ACAO\|)/gm, function(m) { return '\n' + m; })
+      .replace(/\n{3,}/g, '\n\n').trim();
+    document.getElementById('rb').textContent = leg;
     document.getElementById('rb').classList.add('vis');
     document.getElementById('rh').classList.add('vis');
-    btnW.disabled=false;
-  }catch(e){setS('Erro: '+e.message,'err');showAn(false);console.error(e);}
-  finally{btnG.disabled=files.length===0;setTimeout(function(){document.getElementById('pb').style.display='none';setP(0);},800);}
+    document.getElementById('btnW').disabled = false;
+  } catch (e) {
+    sS('Erro: ' + e.message, 'err'); sA(false); console.error(e);
+  } finally {
+    document.getElementById('btnG').disabled = !F.length;
+    setTimeout(function() { document.getElementById('pb').style.display = 'none'; sP(0); }, 800);
+  }
 }
-function copiar(){navigator.clipboard.writeText(document.getElementById('rb').textContent).then(function(){setS('Copiado!','ok');}).catch(function(){setS('Erro.','err');});setTimeout(function(){setS('');},2500);}
-function limpar(){files=[];tg.innerHTML='';updPC();ultimoRelatorio='';dadosForm={};['razao','fantasia','cnpj','cnae','local','obs','datainsp'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('rh').classList.remove('vis');document.getElementById('rb').classList.remove('vis');document.getElementById('rb').textContent='';setS('');document.getElementById('pb').style.display='none';btnW.disabled=true;}
-async function gerarWord(){
-  if(!ultimoRelatorio)return;
-  var d=dadosForm;btnW.disabled=true;showAn(true,'Gerando Word...');setS('Montando .docx...');
-  try{
-    var D=docx,DG='1F4E2F',LG='E8F5E9',CW=9026;
-    var brd={style:D.BorderStyle.SINGLE,size:1,color:'CCCCCC'};
-    var bs={top:brd,bottom:brd,left:brd,right:brd};
-    function p(t,o){o=o||{};return new D.Paragraph({alignment:o.center?D.AlignmentType.CENTER:D.AlignmentType.LEFT,spacing:{before:o.before||0,after:o.after||80},children:[new D.TextRun({text:t||'',font:'Arial',size:o.size||22,bold:!!o.bold,color:o.color||'000000'})]});}
-    function cell(t,o){o=o||{};return new D.TableCell({borders:bs,width:{size:o.w||1000,type:D.WidthType.DXA},shading:o.bg?{fill:o.bg,type:D.ShadingType.CLEAR}:undefined,verticalAlign:D.VerticalAlign.CENTER,margins:{top:80,bottom:80,left:120,right:120},columnSpan:o.span||1,children:[new D.Paragraph({alignment:o.center?D.AlignmentType.CENTER:D.AlignmentType.LEFT,children:[new D.TextRun({text:t||'',font:'Arial',size:o.size||20,bold:!!o.bold,color:o.color||'000000'})]})]});}
-    function tblI(label,vals){return new D.Table({width:{size:CW,type:D.WidthType.DXA},columnWidths:[CW],rows:[new D.TableRow({children:[cell(label,{w:CW,bold:true,bg:DG,color:'FFFFFF',size:22})]})].concat(vals.map(function(v){return new D.TableRow({children:[cell(v,{w:CW})]});}));}
-    function tblNC(it){return new D.Table({width:{size:CW,type:D.WidthType.DXA},columnWidths:[2400,4426,2200],rows:[new D.TableRow({children:[cell('ITEM '+it.num+' | '+it.titulo,{w:CW,bold:true,bg:DG,color:'FFFFFF',size:20,span:3})]}),new D.TableRow({children:[cell('Evidencia fotografica',{w:2400,bold:true,bg:LG}),cell('Descricao e embasamento legal',{w:4426,bold:true,bg:LG}),cell('Sugestao de correcao tecnica',{w:2200,bold:true,bg:LG})]}),new D.TableRow({children:[cell(it.foto+'\n\n[Inserir foto aqui]',{w:2400}),cell(it.situacao+'\n\nNorma: '+it.norma+'\nGrau: '+it.grau,{w:4426}),cell(it.correcao,{w:2200})]})]});}
-    function getSec(s){var m=ultimoRelatorio.match(new RegExp('---'+s+'---([\\s\\S]*?)(?=---|$)'));return m?m[1].trim():'';}
-    var nc=getSec('NAO_CONFORMIDADES'),pa=getSec('PLANO_ACAO'),itens=[],re=/###([\s\S]*?)###/g,m2;
-    while((m2=re.exec(nc))!==null){var bl=m2[1];function gv(lb){var rx=new RegExp(lb+':\\s*(.+)');var rm=bl.match(rx);return rm?rm[1].trim():'';}itens.push({num:gv('ITEM'),titulo:gv('TITULO'),foto:gv('FOTO'),situacao:gv('SITUACAO'),norma:gv('NORMA'),grau:gv('GRAU'),correcao:gv('CORRECAO')});}
-    var acoes=pa.split('\n').filter(function(l){return l.startsWith('ACAO|');}).map(function(l){var pts=l.split('|');return{num:pts[1],desc:pts[2],resp:pts[3],prior:pts[4],status:pts[5]};});
-    var rPA=[new D.TableRow({children:[cell('ACAO',{w:600,bold:true,bg:DG,color:'FFFFFF'}),cell('DESCRICAO',{w:4000,bold:true,bg:DG,color:'FFFFFF'}),cell('RESPONSABILIDADE',{w:1800,bold:true,bg:DG,color:'FFFFFF'}),cell('PRIORIDADE',{w:1300,bold:true,bg:DG,color:'FFFFFF'}),cell('STATUS',{w:1326,bold:true,bg:DG,color:'FFFFFF'})]})];
-    acoes.forEach(function(a){rPA.push(new D.TableRow({children:[cell(a.num||'',{w:600,center:true}),cell(a.desc||'',{w:4000}),cell(a.resp||'EMPRESA',{w:1800}),cell(a.prior||'',{w:1300,center:true}),cell(a.status||'PENDENTE',{w:1326,center:true})]}));});
-    var ch=[];
-    ch.push(p('RELATORIO DE INSPECAO TECNICA DE SEGURANCA DO TRABALHO',{bold:true,size:28,center:true,color:DG,before:240,after:80}));
-    ch.push(p(d.cidade||'Paragominas-PA',{center:true,size:22,color:'555555'}));
-    ch.push(p('2026',{center:true,size:22,color:'555555',after:240}));
-    ch.push(p('1. INFORMACOES GERAIS',{bold:true,size:24,color:DG,before:200,after:100}));
-    ch.push(p('1.1 IDENTIFICACAO DA EMPRESA',{bold:true,size:22,before:100,after:80}));
-    ch.push(tblI('Dados da empresa vistoriada',['Razao social: '+(d.razao||''),'Nome fantasia: '+(d.fantasia||'')+' | CNPJ: '+(d.cnpj||''),'CNAE: '+(d.cnae||''),'Grau de risco: '+d.grau,'Endereco: '+(d.local||'')]));
-    ch.push(p('',{after:100}));
-    ch.push(p('1.2 IDENTIFICACAO DA EMPRESA RESPONSAVEL PELA INSPECAO',{bold:true,size:22,before:100,after:80}));
-    ch.push(tblI('A. & R. Assessoria Ambiental Ltda',['A & R Assessoria Ambiental e Seguranca Do Trabalho | CNPJ: 43.805.236/0001-08','Rodovia dos Pioneiros, s/n, Paragominas - PA.','Responsavel: '+(d.resp||'')+' | Eng. de Seguranca do Trabalho','Registro: '+(d.crea||''),'(91) 98503-1770 | andrades.rabelo@gmail.com']));
-    ch.push(p('',{after:100}));
-    ch.push(p('2. OBJETIVO E METODOLOGIA',{bold:true,size:24,color:DG,before:200,after:100}));
-    getSec('OBJETIVO').split('\n').filter(function(l){return l.trim();}).forEach(function(l){ch.push(p(l,{after:100}));});
-    ch.push(p('',{after:100}));
-    ch.push(p('3. PRINCIPAIS RESULTADOS',{bold:true,size:24,color:DG,before:200,after:100}));
-    itens.forEach(function(it){ch.push(tblNC(it));ch.push(p('',{after:80}));});
-    ch.push(p('4. PONTOS POSITIVOS OBSERVADOS',{bold:true,size:24,color:DG,before:200,after:100}));
-    getSec('PONTOS_POSITIVOS').split('\n').filter(function(l){return l.trim();}).forEach(function(l){ch.push(p(l,{after:80}));});
-    ch.push(p('',{after:100}));
-    ch.push(p('5. PLANO DE ACAO',{bold:true,size:24,color:DG,before:200,after:100}));
-    ch.push(new D.Table({width:{size:CW,type:D.WidthType.DXA},columnWidths:[600,4000,1800,1300,1326],rows:rPA}));
-    ch.push(p('',{after:100}));
-    ch.push(p('6. CONCLUSAO',{bold:true,size:24,color:DG,before:200,after:100}));
-    getSec('CONCLUSAO').split('\n').filter(function(l){return l.trim();}).forEach(function(l){ch.push(p(l,{after:100}));});
-    ch.push(p('',{after:400}));
-    ch.push(p('________________________________________',{center:true,after:40}));
-    ch.push(p((d.resp||'').toUpperCase(),{bold:true,center:true,color:DG,after:40}));
-    ch.push(p('Engenheira de Seguranca do Trabalho',{center:true,after:40}));
-    ch.push(p(d.crea||'',{center:true,after:40}));
-    ch.push(p((d.cidade||'Paragominas-PA')+', '+(d.datainsp||''),{center:true,after:40}));
-    var doc=new D.Document({styles:{default:{document:{run:{font:'Arial',size:22}}}},sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1080,bottom:1080,left:1080,right:1080}}},children:ch}]});
-    var buf=await D.Packer.toBuffer(doc);
-    var blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
-    var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;
-    a.download='Relatorio_'+(d.fantasia||d.razao||'empresa').replace(/\s+/g,'_')+'.docx';
-    a.click();URL.revokeObjectURL(url);
-    setS('Word baixado!','ok');setTimeout(function(){setS('');},3000);
-  }catch(e){setS('Erro Word: '+e.message,'err');console.error(e);}
-  finally{showAn(false);btnW.disabled=false;}
+
+function copiar() {
+  navigator.clipboard.writeText(document.getElementById('rb').textContent)
+    .then(function() { sS('Copiado!', 'ok'); })
+    .catch(function() { sS('Erro ao copiar.', 'err'); });
+  setTimeout(function() { sS(''); }, 2500);
+}
+
+function limpar() {
+  F = []; document.getElementById('tg').innerHTML = ''; cnt(); REL = ''; FORM = {};
+  ['razao','fantasia','cnpj','cnae','local','obs','datainsp'].forEach(function(id) { document.getElementById(id).value = ''; });
+  document.getElementById('rh').classList.remove('vis');
+  document.getElementById('rb').classList.remove('vis');
+  document.getElementById('rb').textContent = ''; sS('');
+  document.getElementById('pb').style.display = 'none';
+  document.getElementById('btnW').disabled = true;
+}
+
+function gS(s) {
+  var m = REL.match(new RegExp('---' + s + '---([\s\S]*?)(?=---|$)'));
+  return m ? m[1].trim() : '';
+}
+
+async function gerarWord() {
+  if (!REL) return;
+  var d = FORM;
+  document.getElementById('btnW').disabled = true;
+  sA(true, 'Gerando Word...'); sS('Montando .docx...');
+  try {
+    var D = docx, DG = '1F4E2F', LG = 'E8F5E9', CW = 9026;
+    var brd = { style: D.BorderStyle.SINGLE, size: 1, color: 'CCCCCC' };
+    var bs = { top: brd, bottom: brd, left: brd, right: brd };
+    function p(t, o) {
+      o = o || {};
+      return new D.Paragraph({ alignment: o.c ? D.AlignmentType.CENTER : D.AlignmentType.LEFT, spacing: { before: o.b || 0, after: o.a || 80 }, children: [new D.TextRun({ text: t || '', font: 'Arial', size: o.s || 22, bold: !!o.bold, color: o.col || '000000' })] });
+    }
+    function cell(t, o) {
+      o = o || {};
+      return new D.TableCell({ borders: bs, width: { size: o.w || 1000, type: D.WidthType.DXA }, shading: o.bg ? { fill: o.bg, type: D.ShadingType.CLEAR } : undefined, verticalAlign: D.VerticalAlign.CENTER, margins: { top: 80, bottom: 80, left: 120, right: 120 }, columnSpan: o.span || 1, children: [new D.Paragraph({ alignment: o.c ? D.AlignmentType.CENTER : D.AlignmentType.LEFT, children: [new D.TextRun({ text: t || '', font: 'Arial', size: o.s || 20, bold: !!o.bold, color: o.col || '000000' })] })] });
+    }
+    function tI(label, vals) {
+      return new D.Table({ width: { size: CW, type: D.WidthType.DXA }, columnWidths: [CW], rows: [new D.TableRow({ children: [cell(label, { w: CW, bold: true, bg: DG, col: 'FFFFFF', s: 22 })] })].concat(vals.map(function(v) { return new D.TableRow({ children: [cell(v, { w: CW })] }); })) });
+    }
+    function tNC(it) {
+      return new D.Table({ width: { size: CW, type: D.WidthType.DXA }, columnWidths: [2400, 4426, 2200], rows: [new D.TableRow({ children: [cell('ITEM ' + it.num + ' | ' + it.titulo, { w: CW, bold: true, bg: DG, col: 'FFFFFF', s: 20, span: 3 })] }), new D.TableRow({ children: [cell('Evidencia fotografica', { w: 2400, bold: true, bg: LG }), cell('Descricao e embasamento legal', { w: 4426, bold: true, bg: LG }), cell('Sugestao de correcao tecnica', { w: 2200, bold: true, bg: LG })] }), new D.TableRow({ children: [cell(it.foto + '\n\n[Inserir foto aqui]', { w: 2400 }), cell(it.situacao + '\n\nNorma: ' + it.norma + '\nGrau: ' + it.grau, { w: 4426 }), cell(it.correcao, { w: 2200 })] })] });
+    }
+    var nc = gS('NAO_CONFORMIDADES'), pa = gS('PLANO_ACAO'), itens = [], re = /###([\s\S]*?)###/g, m2;
+    while ((m2 = re.exec(nc)) !== null) {
+      var bl = m2[1];
+      function gv(lb) { var rx = new RegExp(lb + ':\\s*(.+)'); var rm = bl.match(rx); return rm ? rm[1].trim() : ''; }
+      itens.push({ num: gv('ITEM'), titulo: gv('TITULO'), foto: gv('FOTO'), situacao: gv('SITUACAO'), norma: gv('NORMA'), grau: gv('GRAU'), correcao: gv('CORRECAO') });
+    }
+    var acoes = pa.split('\n').filter(function(l) { return l.startsWith('ACAO|'); }).map(function(l) { var pts = l.split('|'); return { num: pts[1], desc: pts[2], resp: pts[3], prior: pts[4], status: pts[5] }; });
+    var rPA = [new D.TableRow({ children: [cell('ACAO', { w: 600, bold: true, bg: DG, col: 'FFFFFF' }), cell('DESCRICAO', { w: 4000, bold: true, bg: DG, col: 'FFFFFF' }), cell('RESPONSABILIDADE', { w: 1800, bold: true, bg: DG, col: 'FFFFFF' }), cell('PRIORIDADE', { w: 1300, bold: true, bg: DG, col: 'FFFFFF' }), cell('STATUS', { w: 1326, bold: true, bg: DG, col: 'FFFFFF' })] })];
+    acoes.forEach(function(a) { rPA.push(new D.TableRow({ children: [cell(a.num || '', { w: 600, c: true }), cell(a.desc || '', { w: 4000 }), cell(a.resp || 'EMPRESA', { w: 1800 }), cell(a.prior || '', { w: 1300, c: true }), cell(a.status || 'PENDENTE', { w: 1326, c: true })] })); });
+    var ch = [];
+    ch.push(p('RELATORIO DE INSPECAO TECNICA DE SEGURANCA DO TRABALHO', { bold: true, s: 28, c: true, col: DG, b: 240, a: 80 }));
+    ch.push(p(d.cidade || 'Paragominas-PA', { c: true, s: 22, col: '555555' }));
+    ch.push(p('2026', { c: true, s: 22, col: '555555', a: 240 }));
+    ch.push(p('1. INFORMACOES GERAIS', { bold: true, s: 24, col: DG, b: 200, a: 100 }));
+    ch.push(p('1.1 IDENTIFICACAO DA EMPRESA', { bold: true, s: 22, b: 100, a: 80 }));
+    ch.push(tI('Dados da empresa vistoriada', ['Razao social: ' + (d.razao || ''), 'Nome fantasia: ' + (d.fantasia || '') + ' | CNPJ: ' + (d.cnpj || ''), 'CNAE: ' + (d.cnae || ''), 'Grau de risco: ' + d.grau, 'Endereco: ' + (d.local || '')]));
+    ch.push(p('', { a: 100 }));
+    ch.push(p('1.2 IDENTIFICACAO DA EMPRESA RESPONSAVEL PELA INSPECAO', { bold: true, s: 22, b: 100, a: 80 }));
+    ch.push(tI('A. & R. Assessoria Ambiental Ltda', ['A & R Assessoria Ambiental e Seguranca Do Trabalho | CNPJ: 43.805.236/0001-08', 'Rodovia dos Pioneiros, s/n, Paragominas - PA.', 'Responsavel: ' + (d.resp || '') + ' | Eng. de Seguranca do Trabalho', 'Registro: ' + (d.crea || ''), '(91) 98503-1770 | andrades.rabelo@gmail.com']));
+    ch.push(p('', { a: 100 }));
+    ch.push(p('2. OBJETIVO E METODOLOGIA', { bold: true, s: 24, col: DG, b: 200, a: 100 }));
+    gS('OBJETIVO').split('\n').filter(function(l) { return l.trim(); }).forEach(function(l) { ch.push(p(l, { a: 100 })); });
+    ch.push(p('', { a: 100 }));
+    ch.push(p('3. PRINCIPAIS RESULTADOS', { bold: true, s: 24, col: DG, b: 200, a: 100 }));
+    itens.forEach(function(it) { ch.push(tNC(it)); ch.push(p('', { a: 80 })); });
+    ch.push(p('4. PONTOS POSITIVOS OBSERVADOS', { bold: true, s: 24, col: DG, b: 200, a: 100 }));
+    gS('PONTOS_POSITIVOS').split('\n').filter(function(l) { return l.trim(); }).forEach(function(l) { ch.push(p(l, { a: 80 })); });
+    ch.push(p('', { a: 100 }));
+    ch.push(p('5. PLANO DE ACAO', { bold: true, s: 24, col: DG, b: 200, a: 100 }));
+    ch.push(new D.Table({ width: { size: CW, type: D.WidthType.DXA }, columnWidths: [600, 4000, 1800, 1300, 1326], rows: rPA }));
+    ch.push(p('', { a: 100 }));
+    ch.push(p('6. CONCLUSAO', { bold: true, s: 24, col: DG, b: 200, a: 100 }));
+    gS('CONCLUSAO').split('\n').filter(function(l) { return l.trim(); }).forEach(function(l) { ch.push(p(l, { a: 100 })); });
+    ch.push(p('', { a: 400 }));
+    ch.push(p('________________________________________', { c: true, a: 40 }));
+    ch.push(p((d.resp || '').toUpperCase(), { bold: true, c: true, col: DG, a: 40 }));
+    ch.push(p('Engenheira de Seguranca do Trabalho', { c: true, a: 40 }));
+    ch.push(p(d.crea || '', { c: true, a: 40 }));
+    ch.push(p((d.cidade || 'Paragominas-PA') + ', ' + (d.datainsp || ''), { c: true, a: 40 }));
+    var doc = new D.Document({ styles: { default: { document: { run: { font: 'Arial', size: 22 } } } }, sections: [{ properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 1080, bottom: 1080, left: 1080, right: 1080 } } }, children: ch }] });
+    var buf = await D.Packer.toBuffer(doc);
+    var blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url;
+    a.download = 'Relatorio_' + (d.fantasia || d.razao || 'empresa').replace(/\s+/g, '_') + '.docx';
+    a.click(); URL.revokeObjectURL(url);
+    sS('Word baixado!', 'ok'); setTimeout(function() { sS(''); }, 3000);
+  } catch (e) { sS('Erro Word: ' + e.message, 'err'); console.error(e); }
+  finally { sA(false); document.getElementById('btnW').disabled = false; }
 }
 </script>
 </body>
