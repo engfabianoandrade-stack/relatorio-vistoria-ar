@@ -373,11 +373,13 @@ async function gerarWord() {
     function p(runs, opts) {
       opts = opts || {};
       if (typeof runs === 'string') runs = [{ text: runs }];
+      if (!Array.isArray(runs)) runs = [{ text: String(runs) }];
       return new D.Paragraph({
         alignment: opts.c ? D.AlignmentType.CENTER : (opts.r ? D.AlignmentType.RIGHT : D.AlignmentType.LEFT),
         spacing: { before: opts.b || 0, after: opts.a || 100 },
         children: runs.map(function(r) {
-          return new D.TextRun({ text: r.text || '', font: 'Arial', size: r.s || opts.s || 22, bold: r.bold || opts.bold || false, color: r.col || opts.col || '000000', italics: r.i || false });
+          if (typeof r === 'string') r = { text: r };
+          return new D.TextRun({ text: r.text || '', font: 'Arial', size: r.s || opts.s || 22, bold: !!(r.bold || opts.bold), color: r.col || opts.col || '000000', italics: !!(r.i) });
         })
       });
     }
@@ -451,14 +453,17 @@ async function gerarWord() {
           var bin = atob(imgObj.data);
           var arr = new Uint8Array(bin.length);
           for (var k = 0; k < bin.length; k++) arr[k] = bin.charCodeAt(k);
+          var mtype = imgObj.type || 'image/jpeg';
+          var itype = mtype.indexOf('png') >= 0 ? 'png' : mtype.indexOf('gif') >= 0 ? 'gif' : 'jpeg';
           var imgRun = new D.ImageRun({
             data: arr,
             transformation: { width: 130, height: 130 },
-            type: imgObj.type === 'image/png' ? 'png' : 'jpg'
+            type: itype
           });
           fotoCell = cell([new D.Paragraph({ alignment: D.AlignmentType.CENTER, children: [imgRun], spacing: { after: 40 } }), p('Foto ' + item.num, { c: true, s: 18 })], { w: 1836 });
         } catch(e) {
-          fotoCell = cell('Foto ' + item.num + '\n' + item.foto, { w: 1836, c: true });
+          console.warn('Imagem nao embutida, usando placeholder:', e.message);
+          fotoCell = cell([p('Foto ' + item.num, { c: true, s: 18, bold: true }), p(item.foto, { c: true, s: 16 })], { w: 1836 });
         }
       } else {
         fotoCell = cell('[Foto ' + item.num + ']', { w: 1836, c: true });
