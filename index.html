@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Relatorio de Vistoria - A&R Assessoria</title>
-<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<script src="./docx.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:#f4f6f4;color:#1a1a1a;min-height:100vh}
@@ -359,18 +359,8 @@ async function gerarWord() {
   var d = FORM;
   document.getElementById('btnW').disabled = true;
   sA(true, 'Gerando Word...'); sS('Montando documento no modelo A&R...');
-  // Aguardar carregamento do docx se necessario
-  var waitDocx = new Promise(function(res, rej) {
-    if (typeof docx !== 'undefined') { res(); return; }
-    var t = 0;
-    var iv = setInterval(function() {
-      if (typeof docx !== 'undefined') { clearInterval(iv); res(); }
-      t += 100;
-      if (t > 10000) { clearInterval(iv); rej(new Error('docx library nao carregou. Recarregue a pagina.')); }
-    }, 100);
-  });
   try {
-    await waitDocx;
+    if (typeof docx === 'undefined') throw new Error('Biblioteca docx nao carregou. Recarregue a pagina e tente novamente.');
     var D = docx;
     var DG = '1F4E2F', DG2 = '2D6E42', LG = 'E8F5E9', GOLD = 'C5A028', WHITE = 'FFFFFF';
     var CW = 9072; // largura total da tabela em DXA (A4 com margens 1.5cm)
