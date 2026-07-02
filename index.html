@@ -580,8 +580,7 @@ async function gerarWord() {
     });
 
     sS('Gerando arquivo...'); sP(95);
-    var buf = await D.Packer.toBuffer(doc);
-    var blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    var blob = await D.Packer.toBlob(doc);
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a'); a.href = url;
     a.download = 'Relatorio_Vistoria_' + (d.fantasia || d.razao || 'empresa').replace(/\s+/g, '_') + '.docx';
